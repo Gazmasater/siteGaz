@@ -1,5 +1,6 @@
 export default defineEventHandler((event) => {
-  const slug = getRouterParam(event, "slug") || "";
+
+const slug = getRouterParam(event, "slug") || "";
 
   if (slug !== "remont-protherm-oshybka-f28-lipeck") {
     throw createError({ statusCode: 404, statusMessage: "Not found" });
@@ -10,6 +11,8 @@ export default defineEventHandler((event) => {
   const canonicalUrl = `http://localhost:3000/lipeck/remont/protherm/oshybka-f28`;
 
   return {
+
+    
     slug,
     title: "Ошибка F28 Protherm — ремонт в Липецке, причины и решение",
     h1: "Ошибка F28 на котле Protherm — что означает и как устранить (Липецк)",
@@ -21,6 +24,14 @@ export default defineEventHandler((event) => {
       { title: "Protherm", url: "/lipeck/remont/protherm/" },
       { title: "Ошибка F28", url: "/lipeck/remont/protherm/oshybka-f28" },
     ],
+    {
+  type: "hero",
+  title: "Ошибка F28 Protherm — ремонт в Липецке",
+  subtitle: "Частые причины, безопасные проверки и когда нужен мастер. Выезд по Липецку.",
+  img: "/img/repair/protherm/hero.jpg", // можно пока не класть — будет плейсхолдер
+  alt: "Ремонт котлов Protherm в Липецке",
+  bullets: ["Выезд в день обращения", "Диагностика", "Гарантия на работы"],
+},
     local_business: {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
