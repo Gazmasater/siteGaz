@@ -6,7 +6,7 @@ const region = String(route.params.region || "");
 const brand = String(route.params.brand || "");
 const code = String(route.params.code || "");
 
-const slug = `remont-${brand}-oshibka-${code}-${region}`;
+const slug = `remont-${brand}-oshybka-${code}-${region}`;
 
 const { data, error } = await useFetch(`/api/repair/page/${slug}`, { key: slug });
 
