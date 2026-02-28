@@ -1,7 +1,7 @@
 export default defineEventHandler((event) => {
   const slug = getRouterParam(event, "slug") || "";
 
-  if (slug !== "remont-protherm-oshibka-f28-lipeck") {
+  if (slug !== "remont-protherm-oshybka-f28-lipeck") {
     throw createError({ statusCode: 404, statusMessage: "Not found" });
   }
 
