@@ -10,7 +10,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   title: 'Сервисный центр котлов',
   subtitle: 'Липецк и область',
-  desktopSrc: '/img/hero-desktop.jpg',
+  desktopSrc: '/img/hero-desktop.png',
   alt: 'Ремонт котлов',
 })
 </script>
