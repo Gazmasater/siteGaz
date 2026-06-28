@@ -3,20 +3,18 @@ defineProps<{ items: { q: string; a: string }[] }>();
 </script>
 
 <template>
-  <section class="card">
-    <h2 class="h2">FAQ</h2>
-    <details v-for="(it, i) in items" :key="i" class="qa">
-      <summary class="q">{{ it.q }}</summary>
-      <p class="a">{{ it.a }}</p>
-    </details>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="rounded-lg border bg-white p-5 shadow-sm md:p-7">
+      <h2 class="m-0 text-2xl font-black tracking-tight md:text-3xl">Вопросы по ошибке</h2>
+      <div class="mt-5 divide-y divide-neutral-200">
+        <details v-for="(it, i) in items" :key="i" class="group py-4">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-bold">
+            {{ it.q }}
+            <span class="text-xl leading-none text-emerald-600 group-open:rotate-45">+</span>
+          </summary>
+          <p class="mt-3 max-w-3xl text-sm leading-6 text-neutral-600">{{ it.a }}</p>
+        </details>
+      </div>
+    </div>
   </section>
 </template>
-
-<style scoped>
-.card { border: 1px solid #e6e6e6; border-radius: 14px; padding: 16px; }
-.h2 { margin: 0 0 10px; font-size: 18px; }
-.qa { padding: 8px 0; border-top: 1px solid #f1f1f1; }
-.qa:first-of-type { border-top: 0; }
-.q { cursor: pointer; }
-.a { margin: 8px 0 0; color: #333; line-height: 1.5; }
-</style>

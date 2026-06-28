@@ -1,7 +1,7 @@
 # Gazmaster site
 
 Исходники сайта лежат в `/root/project/site-src`.
-Текущая статическая версия, которую можно отдавать через nginx, лежит в `/root/project/site`.
+Текущая статическая версия, которую отдает nginx, лежит в `/var/www/remontkotlov48`.
 
 Обычный порядок работы:
 
@@ -11,14 +11,14 @@ npm install
 npm run dev
 ```
 
-После правок собрать и переложить статический сайт в соседний каталог:
+После правок собрать и переложить статический сайт в nginx docroot:
 
 ```bash
 cd /root/project/site-src
 npm run deploy:static
 ```
 
-Команда `deploy:static` запускает `nuxt generate` и копирует результат из `.output/public/` в `../site/`.
+Команда `deploy:static` запускает `nuxt generate` и копирует результат из `.output/public/` в `/var/www/remontkotlov48/`.
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 

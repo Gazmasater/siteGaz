@@ -8,31 +8,23 @@ const props = defineProps<{
   code: string;
 }>();
 
-const telHref = computed(() => `tel:${props.phone.replace(/\s+/g, "")}`);
+const telHref = computed(() => `tel:${props.phone.replace(/[^\d+]/g, "")}`);
 </script>
 
 <template>
-  <section class="card cta">
-    <div>
-      <h2 class="h2">{{ primary }}</h2>
-      <p class="muted">Регион: {{ region }} · {{ brand }} · {{ code.toUpperCase() }}</p>
-    </div>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-5 rounded-lg bg-neutral-950 p-5 text-white shadow-xl shadow-neutral-200 md:flex-row md:items-center md:justify-between md:p-7">
+      <div>
+        <h2 class="m-0 text-2xl font-black tracking-tight">{{ primary }}</h2>
+        <p class="mt-2 text-sm text-neutral-300">Регион: {{ region }} · {{ brand }} · {{ code.toUpperCase() }}</p>
+      </div>
 
-    <div class="actions">
-      <a class="btn" :href="telHref">Позвонить {{ phone }}</a>
-      <button class="btn ghost" type="button" @click="alert('Дальше подключим /api/leads')">
-        {{ secondary || "Оставить заявку" }}
-      </button>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <a class="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-400" :href="telHref">Позвонить {{ phone }}</a>
+        <button class="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/15" type="button" @click="alert('Дальше подключим /api/leads')">
+          {{ secondary || "Оставить заявку" }}
+        </button>
+      </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-.card { border: 1px solid #e6e6e6; border-radius: 14px; padding: 16px; }
-.cta { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.h2 { margin: 0; font-size: 18px; }
-.muted { margin: 6px 0 0; color: #666; font-size: 13px; }
-.actions { display: flex; gap: 10px; }
-.btn { border: 1px solid #111; border-radius: 12px; padding: 10px 14px; background: #111; color: #fff; text-decoration: none; cursor: pointer; }
-.btn.ghost { background: #fff; color: #111; }
-</style>

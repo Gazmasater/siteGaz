@@ -12,16 +12,13 @@ if (error.value) throw createError({ statusCode: 404, statusMessage: "Not found"
 
 const page = computed(() => data.value);
 
-useHead({
-  title: page.value?.title,
-  meta: [{ name: "description", content: page.value?.meta_description || "" }],
-  link: [{ rel: "canonical", href: page.value?.canonical_url || "" }],
-});
+useSeo(page);
+useJsonLd(page);
 </script>
 
 <template>
-  <div class="space-y-4">
-    <nav v-if="page?.breadcrumbs" class="text-sm text-neutral-500">
+  <div class="pb-10">
+    <nav v-if="page?.breadcrumbs" class="mx-auto max-w-7xl px-4 py-4 text-sm text-neutral-500 sm:px-6 lg:px-8">
       <template v-for="(b, i) in page.breadcrumbs" :key="i">
         <NuxtLink v-if="b.url" :to="b.url" class="hover:text-neutral-900">{{ b.title }}</NuxtLink>
         <span v-else>{{ b.title }}</span>
@@ -29,7 +26,7 @@ useHead({
       </template>
     </nav>
 
-    <PageRenderer v-if="page?.blocks" :blocks="page.blocks">
+    <PageRenderer v-if="page?.blocks" :blocks="page.blocks" :h1="page.h1">
       <!-- если захочешь, можем прокинуть actions в hero через slot позже -->
     </PageRenderer>
   </div>
