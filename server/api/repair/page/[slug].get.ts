@@ -80,7 +80,7 @@ function phoneForRegion(regionSlug: string): string {
 }
 
 function canonicalUrl(regionSlug: string, brandSlug: string, codeRaw: string): string {
-  return `http://localhost:3000/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}`;
+  return `https://remontkotlov48.ru/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}`;
 }
 
 function makeBreadcrumbs(regionSlug: string, brand: string, brandSlug: string, code: string, codeRaw: string) {
