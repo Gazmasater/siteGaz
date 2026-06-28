@@ -60,8 +60,8 @@ const brandLinks = [
       <slot />
     </main>
 
-    <footer class="bg-white px-4 py-8 text-white">
-      <div class="mx-auto grid max-w-6xl items-start justify-items-start gap-8 rounded-t-3xl bg-neutral-950 px-6 py-8 md:grid-cols-[1.25fr_1fr_1fr_1.15fr] lg:gap-10 lg:px-10">
+    <footer class="bg-white px-3 py-6 text-white sm:px-4 sm:py-8">
+      <div class="mx-auto grid max-w-6xl items-start gap-8 rounded-t-3xl bg-neutral-950 px-4 py-7 sm:px-6 sm:py-8 md:grid-cols-[1.25fr_1fr_1fr_1.15fr] lg:gap-10 lg:px-10">
         <section class="min-w-0 justify-self-start">
           <NuxtLink to="/" class="inline-flex items-center gap-3">
             <div class="grid h-10 w-10 place-items-center rounded-lg bg-yellow-400 font-black text-neutral-950">G</div>
@@ -94,7 +94,7 @@ const brandLinks = [
 
         <section class="min-w-0 justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Услуги</h2>
-          <nav class="mt-5 grid w-[240px] grid-cols-2 gap-2 text-sm">
+          <nav class="mt-5 grid w-full grid-cols-2 gap-2 text-sm">
             <NuxtLink
               v-for="item in serviceLinks"
               :key="item.label"
@@ -106,13 +106,13 @@ const brandLinks = [
           </nav>
         </section>
 
-        <section class="min-w-0 w-[240px] justify-self-start">
+        <section class="min-w-0 w-full max-w-xs justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Марки котлов</h2>
-          <div class="mt-5 grid w-[240px] grid-cols-2 gap-2 text-sm">
+          <div class="mt-5 grid w-full grid-cols-2 gap-2 text-sm">
             <span
               v-for="brand in brandLinks"
               :key="brand"
-              class="w-[108px] rounded-full border border-white/10 px-3 py-1 text-center text-neutral-300"
+              class="rounded-full border border-white/10 px-3 py-1 text-center text-neutral-300"
             >
               {{ brand }}
             </span>
@@ -123,7 +123,7 @@ const brandLinks = [
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Контакты</h2>
           <a
             :href="phoneHref"
-            class="mt-5 block whitespace-nowrap text-xl font-black tracking-tight text-yellow-300 hover:text-yellow-200 lg:text-2xl"
+            class="mt-5 block break-words text-xl font-black tracking-tight text-yellow-300 hover:text-yellow-200 lg:whitespace-nowrap lg:text-2xl"
           >
             {{ phone }}
           </a>
