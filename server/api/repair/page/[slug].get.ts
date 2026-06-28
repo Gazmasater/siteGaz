@@ -79,6 +79,13 @@ function phoneForRegion(regionSlug: string): string {
   return map[regionSlug] || "+7 (933) 091-72-76";
 }
 
+function regionIn(regionSlug: string, region: string): string {
+  const map: Record<string, string> = {
+    lipeck: "Липецке",
+  };
+  return map[regionSlug] || region;
+}
+
 function canonicalUrl(regionSlug: string, brandSlug: string, codeRaw: string): string {
   return `https://remontkotlov48.ru/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}`;
 }
@@ -158,6 +165,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
   const codeRawNorm = codeRaw.toLowerCase();
 
   const region = regionName(regionSlugNorm);
+  const regionPrep = regionSlugNorm === "lipeck" ? "Липецке" : region;
   const brand = brandName(brandSlugNorm);
   const code = normCode(codeRawNorm);
 
@@ -206,9 +214,9 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
 
       return {
         slug,
-        title: `Ошибка ${code} ${brand} — ремонт в ${region}, причины и решение`,
-        h1: `Ошибка ${code} на котле ${brand} — что означает и как устранить (${region})`,
-        meta_description: `Ошибка ${code} ${brand}: причины, безопасные проверки и когда нужен мастер. Выезд по ${region}.`,
+        title: `Ошибка ${code} ${brand} — ремонт в ${regionPrep}, причины и решение`,
+        h1: `Ошибка ${code} на котле ${brand} — что означает и как устранить (${regionPrep})`,
+        meta_description: `Ошибка ${code} ${brand}: причины, безопасные проверки и когда нужен мастер. Выезд по Липецку и области.`,
         canonical_url: canonical,
         breadcrumbs,
         local_business,
@@ -245,9 +253,9 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
 
       return {
         slug,
-        title: `Ошибка ${code} ${brand} — ремонт в ${region}, причины и решение`,
-        h1: `Ошибка ${code} на котле ${brand} — почему гаснет пламя (${region})`,
-        meta_description: `Ошибка ${code} ${brand}: причины потери пламени и безопасные проверки. Выезд по ${region}.`,
+        title: `Ошибка ${code} ${brand} — ремонт в ${regionPrep}, причины и решение`,
+        h1: `Ошибка ${code} на котле ${brand} — почему гаснет пламя (${regionPrep})`,
+        meta_description: `Ошибка ${code} ${brand}: причины потери пламени и безопасные проверки. Выезд по Липецку и области.`,
         canonical_url: canonical,
         breadcrumbs,
         local_business,
@@ -284,9 +292,9 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
 
       return {
         slug,
-        title: `Ошибка ${code} ${brand} — ремонт в ${region}, причины и решение`,
-        h1: `Ошибка ${code} на котле ${brand} — давление, насос, датчик (${region})`,
-        meta_description: `Ошибка ${code} ${brand}: причины по давлению/насосу и безопасные действия. Выезд по ${region}.`,
+        title: `Ошибка ${code} ${brand} — ремонт в ${regionPrep}, причины и решение`,
+        h1: `Ошибка ${code} на котле ${brand} — давление, насос, датчик (${regionPrep})`,
+        meta_description: `Ошибка ${code} ${brand}: причины по давлению/насосу и безопасные действия. Выезд по Липецку и области.`,
         canonical_url: canonical,
         breadcrumbs,
         local_business,
@@ -303,7 +311,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
     brandSlug: brandSlugNorm,
     code,
     heroImg: `/img/repair/${brandSlugNorm}/hero.jpg`,
-    intro: `Страница по ошибке ${code} для котлов ${brand}. Заполним конкретикой позже: причины, проверки, цены и сроки по региону ${region}.`,
+    intro: `Страница по ошибке ${code} для котлов ${brand}. Заполним конкретикой позже: причины, проверки, цены и сроки в ${regionPrep}.`,
     causes: [
       { title: "Недостаточно данных по модели (заполним после диагностики)", probability: 0.34 },
       { title: "Электрика/датчики/контакты", probability: 0.22 },
@@ -322,9 +330,9 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
 
   return {
     slug,
-    title: `Ошибка ${code} ${brand} — ремонт в ${region}`,
-    h1: `Ошибка ${code} на котле ${brand} (${region})`,
-    meta_description: `Ошибка ${code} ${brand}: причины и решение. Выезд по ${region}.`,
+    title: `Ошибка ${code} ${brand} — ремонт в ${regionPrep}`,
+    h1: `Ошибка ${code} на котле ${brand} (${regionPrep})`,
+    meta_description: `Ошибка ${code} ${brand}: причины и решение. Выезд по Липецку и области.`,
     canonical_url: canonical,
     breadcrumbs,
     local_business,
