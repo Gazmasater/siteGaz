@@ -5,7 +5,7 @@ useHead({
     {
       name: "description",
       content:
-        "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: +7 (962) 352-70-02.",
+        "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: +7 (933) 091-72-76.",
     },
   ],
 });
@@ -15,10 +15,25 @@ useHead({
   <main class="page">
     <section class="hero">
       <img
-        src="/img/header-boiler.png"
-        alt="Ремонт газовых котлов в Липецке"
+        src="/img/header-boiler-generated-79330917276.png"
+        alt="Мастер ремонтирует газовый котёл"
         class="hero-image"
       />
+      <div class="hero-content">
+        <p class="hero-title">Ремонт газовых котлов<br />в Липецке</p>
+        <ul class="hero-list">
+          <li>Выезд в день обращения</li>
+          <li>Диагностика бесплатно</li>
+          <li>Ремонт за 1 визит</li>
+        </ul>
+        <a
+          class="hero-phone"
+          href="tel:+79330917276"
+          aria-label="Позвонить +7 (933) 091-72-76"
+        >
+          +7 (933) 091-72-76
+        </a>
+      </div>
     </section>
 
     <section class="content">
@@ -78,7 +93,7 @@ useHead({
             Позвоните прямо сейчас — проконсультируем по симптомам поломки,
             сориентируем по выезду и запишем мастера на удобное время.
           </p>
-          <a class="phone" href="tel:+79623527002">+7 (962) 352-70-02</a>
+          <a class="phone" href="tel:+79330917276">+7 (933) 091-72-76</a>
         </div>
       </div>
     </section>
@@ -93,23 +108,95 @@ useHead({
 }
 
 .hero {
+  position: relative;
   width: 100%;
+  height: clamp(420px, 46vw, 760px);
   background: #0a1a39;
+  overflow: hidden;
 }
 
 .hero-image {
   display: block;
   width: 100%;
-  max-height: 720px;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: clamp(18px, 7vw, 112px);
+  width: min(760px, 52vw);
+  transform: translateY(-50%);
+  color: #fff;
+}
+
+.hero-title {
+  margin: 0 0 26px;
+  color: #fff;
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+.hero-list {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 34px;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-list li {
+  position: relative;
+  padding-left: 62px;
+  color: #ffe58a;
+  font-size: clamp(18px, 1.9vw, 30px);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.hero-list li::before {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 38px;
+  height: 38px;
+  border: 3px solid #ffd200;
+  border-radius: 50%;
+  color: #ffd200;
+  content: "✓";
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 32px;
+  text-align: center;
+}
+
+.hero-phone {
+  display: inline-flex;
+  align-items: center;
+  color: #ffd200;
+  font-size: clamp(28px, 3.2vw, 54px);
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.hero-phone::before {
+  content: "☎";
+  margin-right: 16px;
+  font-size: 0.85em;
 }
 
 .content {
-  padding: 48px 16px 72px;
+  padding: clamp(32px, 4vw, 64px) 0 clamp(56px, 6vw, 96px);
 }
 
 .container {
-  max-width: 1100px;
+  width: min(92vw, 1440px);
   margin: 0 auto;
 }
 
@@ -204,6 +291,10 @@ p {
 }
 
 @media (max-width: 900px) {
+  .hero-content {
+    width: min(640px, 66vw);
+  }
+
   h1 {
     font-size: 32px;
   }
@@ -228,6 +319,43 @@ p {
 }
 
 @media (max-width: 600px) {
+  .hero-image {
+    min-height: 460px;
+    object-fit: cover;
+    object-position: 70% center;
+  }
+
+  .hero-content {
+    top: 52%;
+    width: min(330px, calc(100% - 28px));
+  }
+
+  .hero-title {
+    margin-bottom: 18px;
+    font-size: 38px;
+  }
+
+  .hero-list {
+    gap: 9px;
+    margin-bottom: 20px;
+  }
+
+  .hero-list li {
+    padding-left: 35px;
+    font-size: 21px;
+  }
+
+  .hero-list li::before {
+    width: 21px;
+    height: 21px;
+    font-size: 17px;
+    line-height: 17px;
+  }
+
+  .hero-phone {
+    font-size: 29px;
+  }
+
   .content {
     padding: 32px 14px 56px;
   }
@@ -247,6 +375,48 @@ p {
 
   .cta {
     padding: 24px 18px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+  .hero-image {
+    height: 320px;
+    object-fit: cover;
+    object-position: 64% center;
+  }
+
+  .hero-content {
+    top: 50%;
+    width: min(460px, 54vw);
+  }
+
+  .hero-title {
+    margin-bottom: 12px;
+    font-size: 32px;
+    line-height: 1.05;
+  }
+
+  .hero-list {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .hero-list li {
+    padding-left: 30px;
+    font-size: 17px;
+    line-height: 1.15;
+  }
+
+  .hero-list li::before {
+    width: 19px;
+    height: 19px;
+    border-width: 2px;
+    font-size: 15px;
+    line-height: 16px;
+  }
+
+  .hero-phone {
+    font-size: 28px;
   }
 }
 </style>

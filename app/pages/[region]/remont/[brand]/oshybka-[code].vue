@@ -23,7 +23,8 @@ useHead({
   <div class="space-y-4">
     <nav v-if="page?.breadcrumbs" class="text-sm text-neutral-500">
       <template v-for="(b, i) in page.breadcrumbs" :key="i">
-        <NuxtLink :to="b.url" class="hover:text-neutral-900">{{ b.title }}</NuxtLink>
+        <NuxtLink v-if="b.url" :to="b.url" class="hover:text-neutral-900">{{ b.title }}</NuxtLink>
+        <span v-else>{{ b.title }}</span>
         <span v-if="i < page.breadcrumbs.length - 1" class="mx-2 text-neutral-300">/</span>
       </template>
     </nav>

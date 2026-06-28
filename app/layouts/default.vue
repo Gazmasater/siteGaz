@@ -22,9 +22,9 @@ const brandLinks = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-neutral-50 text-neutral-900">
+  <div class="min-h-screen bg-white text-neutral-900">
     <header class="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
-      <div class="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between gap-4">
+      <div class="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between gap-4">
         <NuxtLink to="/" class="flex items-center gap-3">
           <div class="h-9 w-9 rounded-xl bg-neutral-900 text-white grid place-items-center font-semibold">G</div>
           <div class="leading-tight">
@@ -60,9 +60,9 @@ const brandLinks = [
       <slot />
     </main>
 
-    <footer class="bg-neutral-950 text-white">
-      <div class="grid w-full gap-10 px-4 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8 2xl:px-12">
-        <section>
+    <footer class="bg-white px-4 py-8 text-white">
+      <div class="mx-auto grid max-w-6xl items-start justify-items-start gap-8 rounded-t-3xl bg-neutral-950 px-6 py-8 md:grid-cols-[1.25fr_1fr_1fr_1.15fr] lg:gap-10 lg:px-10">
+        <section class="min-w-0 justify-self-start">
           <NuxtLink to="/" class="inline-flex items-center gap-3">
             <div class="grid h-10 w-10 place-items-center rounded-lg bg-yellow-400 font-black text-neutral-950">G</div>
             <div class="leading-tight">
@@ -71,7 +71,7 @@ const brandLinks = [
             </div>
           </NuxtLink>
 
-          <p class="mt-5 max-w-lg text-sm leading-6 text-neutral-300">
+          <p class="mt-5 max-w-md text-sm leading-6 text-neutral-300">
             Ремонт, диагностика и обслуживание газовых котлов в Липецке и области.
             Выезд мастера в день обращения, понятная стоимость до начала работ.
           </p>
@@ -92,9 +92,9 @@ const brandLinks = [
           </div>
         </section>
 
-        <section>
+        <section class="min-w-0 justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Услуги</h2>
-          <nav class="mt-5 grid gap-3 text-sm">
+          <nav class="mt-5 grid w-[240px] grid-cols-2 gap-2 text-sm">
             <NuxtLink
               v-for="item in serviceLinks"
               :key="item.label"
@@ -106,24 +106,24 @@ const brandLinks = [
           </nav>
         </section>
 
-        <section>
+        <section class="min-w-0 w-[240px] justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Марки котлов</h2>
-          <div class="mt-5 flex flex-wrap gap-2">
+          <div class="mt-5 grid w-[240px] grid-cols-2 gap-2 text-sm">
             <span
               v-for="brand in brandLinks"
               :key="brand"
-              class="rounded-full border border-white/10 px-3 py-1 text-sm text-neutral-300"
+              class="w-[108px] rounded-full border border-white/10 px-3 py-1 text-center text-neutral-300"
             >
               {{ brand }}
             </span>
           </div>
         </section>
 
-        <section>
+        <section class="min-w-0 justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Контакты</h2>
           <a
             :href="phoneHref"
-            class="mt-5 block text-2xl font-black tracking-tight text-yellow-300 hover:text-yellow-200"
+            class="mt-5 block whitespace-nowrap text-xl font-black tracking-tight text-yellow-300 hover:text-yellow-200 lg:text-2xl"
           >
             {{ phone }}
           </a>
@@ -141,8 +141,8 @@ const brandLinks = [
         </section>
       </div>
 
-      <div class="border-t border-white/10">
-        <div class="flex flex-col gap-3 px-4 py-5 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between lg:px-8 2xl:px-12">
+      <div class="mx-auto max-w-6xl rounded-b-3xl border-t border-white/10 bg-neutral-950">
+        <div class="flex flex-col gap-3 px-6 py-4 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between lg:px-10">
           <div>© {{ currentYear }} Gazmaster. Ремонт газовых котлов в Липецке.</div>
           <div>Информация на сайте не является публичной офертой.</div>
         </div>

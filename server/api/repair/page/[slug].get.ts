@@ -74,9 +74,9 @@ function brandName(brandSlug: string): string {
 
 function phoneForRegion(regionSlug: string): string {
   const map: Record<string, string> = {
-    lipeck: "+7 900 000-00-00",
+    lipeck: "+7 (933) 091-72-76",
   };
-  return map[regionSlug] || "+7 900 000-00-00";
+  return map[regionSlug] || "+7 (933) 091-72-76";
 }
 
 function canonicalUrl(regionSlug: string, brandSlug: string, codeRaw: string): string {
@@ -86,7 +86,7 @@ function canonicalUrl(regionSlug: string, brandSlug: string, codeRaw: string): s
 function makeBreadcrumbs(regionSlug: string, brand: string, brandSlug: string, code: string, codeRaw: string) {
   return [
     { title: "Ремонт котлов", url: `/${regionSlug}/remont/` },
-    { title: brand, url: `/${regionSlug}/remont/${brandSlug}/` },
+    { title: brand, url: "" },
     { title: `Ошибка ${code}`, url: `/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}` },
   ];
 }
