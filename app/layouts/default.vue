@@ -61,7 +61,7 @@ const brandLinks = [
     </main>
 
     <footer class="bg-white px-3 py-6 text-white sm:px-4 sm:py-8">
-      <div class="mx-auto grid max-w-6xl items-start gap-8 rounded-t-3xl bg-neutral-950 px-4 py-7 sm:px-6 sm:py-8 lg:grid-cols-2 xl:grid-cols-[1.25fr_1fr_1fr_1.15fr] lg:gap-10 lg:px-10">
+      <div class="mx-auto grid max-w-6xl items-start gap-8 rounded-t-3xl bg-neutral-950 px-4 py-7 sm:px-6 sm:py-8 lg:grid-cols-2 xl:grid-cols-[1.25fr_1fr_1fr_1.15fr] lg:gap-14 lg:px-10 xl:gap-20">
         <section class="min-w-0 justify-self-start">
           <NuxtLink to="/" class="inline-flex items-center gap-3">
             <div class="grid h-10 w-10 place-items-center rounded-lg bg-yellow-400 font-black text-neutral-950">G</div>
@@ -94,7 +94,7 @@ const brandLinks = [
 
         <section class="min-w-0 justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Услуги</h2>
-          <nav class="mt-5 grid w-full grid-cols-1 gap-3 text-sm xl:grid-cols-2 xl:gap-2">
+          <nav class="mt-5 grid w-full grid-cols-1 gap-3 text-sm">
             <NuxtLink
               v-for="item in serviceLinks"
               :key="item.label"
