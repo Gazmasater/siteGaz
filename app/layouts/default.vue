@@ -150,3 +150,36 @@ const brandLinks = [
     </footer>
   </div>
 </template>
+
+
+<style>
+/* Force footer layout on mobile landscape */
+@media (max-width: 1024px) and (orientation: landscape) {
+  footer > div:first-child {
+    grid-template-columns: 1fr !important;
+  }
+
+  footer > div:first-child > section {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  footer nav {
+    grid-template-columns: 1fr !important;
+  }
+
+  footer nav a {
+    display: block;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+  }
+
+  footer a[href^="tel:"] {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
+}
+</style>
+
