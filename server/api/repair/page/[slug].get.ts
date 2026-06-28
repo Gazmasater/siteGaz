@@ -12,10 +12,13 @@ type Block =
       title: string;
       subtitle: string;
       img?: string;
+      logo?: string;
+      logoAlt?: string;
       alt?: string;
       bullets?: string[];
     }
-  | { type: "intro"; text: string }
+  | { type: "intro"; text: string; badge?: string; title?: string; note?: string }
+  | { type: "content"; title: string; paragraphs: string[]; items?: { title: string; text: string }[] }
   | { type: "causes"; items: { title: string; probability?: number }[] }
   | {
       type: "steps";
@@ -87,22 +90,23 @@ function regionIn(regionSlug: string, region: string): string {
 }
 
 function canonicalUrl(regionSlug: string, brandSlug: string, codeRaw: string): string {
-  return `https://remontkotlov48.ru/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}`;
+  return `https://remontkotlov48.ru/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}/`;
 }
 
 function makeBreadcrumbs(regionSlug: string, brand: string, brandSlug: string, code: string, codeRaw: string) {
   return [
     { title: "Ремонт котлов", url: `/${regionSlug}/remont/` },
     { title: brand, url: "" },
-    { title: `Ошибка ${code}`, url: `/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}` },
+    { title: `Ошибка ${code}`, url: `/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}/` },
   ];
 }
 
 function makeLocalBusiness(region: string, brand: string, phone: string): Record<string, unknown> {
+  const regionPrep = region === "Липецк" ? "Липецке" : region;
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    name: `Ремонт котлов ${brand} в ${region}`,
+    name: `Ремонт котлов ${brand} в ${regionPrep}`,
     areaServed: region,
     telephone: phone,
     address: {
@@ -115,11 +119,14 @@ function makeLocalBusiness(region: string, brand: string, phone: string): Record
 
 function makeCommonBlocks(params: {
   region: string;
+  regionPrep: string;
   regionSlug: string;
   brand: string;
   brandSlug: string;
   code: string;
   heroImg?: string;
+  logo?: string;
+  logoAlt?: string;
   intro: string;
   causes: { title: string; probability?: number }[];
   steps: { title: string; safety?: Safety; can_user_do?: boolean }[];
@@ -130,13 +137,21 @@ function makeCommonBlocks(params: {
   return [
     {
       type: "hero",
-      title: `Ошибка ${params.code} ${params.brand} — ремонт в ${params.region}`,
+      title: `Ошибка ${params.code} ${params.brand} — ремонт в ${params.regionPrep}`,
       subtitle: "Частые причины, безопасные проверки и когда нужен мастер. Выезд по городу и области.",
       img: params.heroImg,
-      alt: `Ремонт котлов ${params.brand} в ${params.region}`,
+      logo: params.logo,
+      logoAlt: params.logoAlt,
+      alt: `Ремонт котлов ${params.brand} в ${params.regionPrep}`,
       bullets: ["Выезд в день обращения", "Диагностика", "Гарантия на работы"],
     },
-    { type: "intro", text: params.intro },
+    {
+      type: "intro",
+      text: params.intro,
+      badge: `${params.code} ${params.brand}`,
+      title: params.code === "F28" ? "Срыв розжига или нет пламени" : "Диагностика ошибки котла",
+      note: "Не разбирайте газовую часть самостоятельно. Безопасно проверить только кран, наличие газа и выполнить сброс.",
+    },
     { type: "causes", items: params.causes },
     {
       type: "steps",
@@ -182,11 +197,14 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
     if (codeKey === "F28") {
       const blocks = makeCommonBlocks({
         region,
+        regionPrep,
         regionSlug: regionSlugNorm,
         brand,
         brandSlug: brandSlugNorm,
         code,
-        heroImg: "/img/repair/protherm/hero.jpg",
+        heroImg: "/img/header-boiler-generated-79330917276.png",
+        logo: "/img/brands/protherm-logo.png",
+        logoAlt: "Логотип Protherm",
         intro:
           "Ошибка F28 на котлах Protherm чаще всего связана с розжигом или подачей газа. Ниже — частые причины и безопасные действия, которые можно сделать без вмешательства в газовую часть.",
         causes: [
@@ -212,10 +230,34 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
         ],
       });
 
+      blocks.splice(2, 0, {
+        type: "content",
+        title: "Что означает ошибка F28 на котлах Protherm",
+        paragraphs: [
+          "Код F28 у Protherm обычно появляется, когда котёл не смог выполнить розжиг и не увидел стабильное пламя. На практике это может быть связано как с внешними причинами, например закрытым газовым краном или низким давлением газа, так и с узлами котла: электродом розжига, ионизацией, газовым клапаном, платой управления или настройками горения.",
+          "Чаще всего с такой ошибкой обращаются владельцы настенных котлов Protherm Gepard, Panther, Leopard, Рысь и Пантера. Точная причина зависит от модели, состояния камеры сгорания, дымоудаления, давления газа и качества обслуживания. Поэтому простого сброса ошибки обычно недостаточно: если F28 возвращается, котёл нужно диагностировать по месту.",
+          "В Липецке мастер проверяет безопасные внешние причины, цепь розжига, электрод ионизации, контакты, газовый узел и работу котла при запуске. Стоимость ремонта зависит от причины и запчастей; цену согласовываем после диагностики до начала работ.",
+        ],
+        items: [
+          {
+            title: "Симптомы",
+            text: "Котёл щёлкает, пытается разжечься, затем уходит в ошибку F28; отопление и горячая вода не запускаются.",
+          },
+          {
+            title: "Срок выезда",
+            text: "По Липецку возможен выезд в день обращения, по области время согласуем по адресу и загруженности мастера.",
+          },
+          {
+            title: "Цена",
+            text: "Итоговая стоимость зависит от причины: чистка и регулировка дешевле, замена клапана или платы дороже.",
+          },
+        ],
+      });
+
       return {
         slug,
         title: `Ошибка ${code} ${brand} — ремонт в ${regionPrep}, причины и решение`,
-        h1: `Ошибка ${code} на котле ${brand} — что означает и как устранить (${regionPrep})`,
+        h1: `Ошибка ${code} на котле ${brand} — что означает и как устранить в ${regionPrep}`,
         meta_description: `Ошибка ${code} ${brand}: причины, безопасные проверки и когда нужен мастер. Выезд по Липецку и области.`,
         canonical_url: canonical,
         breadcrumbs,
@@ -227,11 +269,14 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
     if (codeKey === "F29") {
       const blocks = makeCommonBlocks({
         region,
+        regionPrep,
         regionSlug: regionSlugNorm,
         brand,
         brandSlug: brandSlugNorm,
         code,
-        heroImg: "/img/repair/protherm/hero.jpg",
+        heroImg: "/img/header-boiler-generated-79330917276.png",
+        logo: "/img/brands/protherm-logo.png",
+        logoAlt: "Логотип Protherm",
         intro:
           "Ошибка F29 обычно означает потерю пламени после розжига. Часто причина — нестабильная подача газа, ионизация или влияние дымоудаления (в зависимости от модели).",
         causes: [
@@ -266,11 +311,14 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
     if (codeKey === "F75") {
       const blocks = makeCommonBlocks({
         region,
+        regionPrep,
         regionSlug: regionSlugNorm,
         brand,
         brandSlug: brandSlugNorm,
         code,
-        heroImg: "/img/repair/protherm/hero.jpg",
+        heroImg: "/img/header-boiler-generated-79330917276.png",
+        logo: "/img/brands/protherm-logo.png",
+        logoAlt: "Логотип Protherm",
         intro:
           "Ошибка F75 связана с давлением/циркуляцией: котёл не видит ожидаемого изменения давления при запуске насоса. Частые причины — воздух в системе, датчик давления, насос, фильтр.",
         causes: [
@@ -306,6 +354,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
   // Дефолт для любых других комбинаций — чтобы не ловить 404
   const blocks = makeCommonBlocks({
     region,
+    regionPrep,
     regionSlug: regionSlugNorm,
     brand,
     brandSlug: brandSlugNorm,
