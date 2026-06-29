@@ -1,17 +1,229 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { brandErrorCodes, regionPrepTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
+
 const route = useRoute();
 const region = String(route.params.region || "");
-useHead({ title: `Ремонт котлов — ${region}` });
+const regionName = regionTitle(region);
+const regionPrep = regionPrepTitle(region);
+const phone = "+7 (933) 091-72-76";
+const phoneHref = "tel:+79330917276";
+
+const brandCards = repairBrands.map((brand) => ({
+  ...brand,
+  codes: brandErrorCodes[brand.slug] || [],
+}));
+
+const popularErrors = [
+  { brand: "Protherm", slug: "protherm", code: "F28", text: "нет розжига или срыв пламени" },
+  { brand: "Protherm", slug: "protherm", code: "F75", text: "давление, насос или датчик" },
+  { brand: "Baxi", slug: "baxi", code: "E01", text: "нет пламени" },
+  { brand: "Baxi", slug: "baxi", code: "E10", text: "давление воды" },
+  { brand: "Navien", slug: "navien", code: "01", text: "перегрев котла" },
+  { brand: "Navien", slug: "navien", code: "03", text: "ошибка розжига" },
+];
+
+const stats = [
+  "Выезд в день обращения",
+  "Диагностика перед ремонтом",
+  "Гарантия на работы",
+];
+
+const title = `Ремонт газовых котлов в ${regionPrep}`;
+const description = `Ремонт и диагностика газовых котлов Protherm, Baxi, Navien в ${regionPrep}. Разбор кодов ошибок, выезд мастера и согласование стоимости до ремонта.`;
+
+useHead({
+  title: `${title} — ошибки, бренды и услуги`,
+  meta: [
+    { name: "description", content: description },
+    { property: "og:title", content: `${title} — ошибки, бренды и услуги` },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+  ],
+  link: [{ rel: "canonical", href: `https://remontkotlov48.ru/${region}/remont/` }],
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: title,
+        description,
+        serviceType: "Ремонт газовых котлов",
+        areaServed: { "@type": "City", name: regionName },
+        provider: {
+          "@type": "LocalBusiness",
+          name: `Ремонт котлов в ${regionPrep}`,
+          telephone: phone,
+          address: { "@type": "PostalAddress", addressLocality: regionName, addressCountry: "RU" },
+        },
+        offers: {
+          "@type": "Offer",
+          availability: "https://schema.org/InStock",
+          priceCurrency: "RUB",
+          url: `https://remontkotlov48.ru/${region}/remont/`,
+        },
+      }),
+    },
+  ],
+});
 </script>
 
 <template>
-  <main style="max-width:920px;margin:0 auto;padding:24px 16px;">
-    <h1 style="font-size:32px;margin:0 0 16px;">Ремонт котлов ({{ region }})</h1>
-    <p style="color:#666;margin:0 0 16px;">Тестовый хаб региона.</p>
+  <main class="bg-white text-neutral-950">
+    <section class="relative isolate overflow-hidden bg-neutral-950 text-white">
+      <picture>
+        <source srcset="/img/header-boiler-generated-79330917276.avif" type="image/avif" />
+        <source srcset="/img/header-boiler-generated-79330917276.webp" type="image/webp" />
+        <img
+          src="/img/header-boiler-generated-79330917276.png"
+          alt="Ремонт газовых котлов в Липецке"
+          class="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center]"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </picture>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-r from-neutral-950 via-neutral-950/88 to-neutral-950/22"></div>
+      <div class="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-white to-transparent"></div>
 
-    <NuxtLink :to="`/${region}/remont/protherm/oshybka-f28`">
-      Protherm — ошибка F28
-    </NuxtLink>
+      <div class="mx-auto grid min-h-[620px] max-w-7xl items-center gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_380px] lg:px-8">
+        <div class="max-w-3xl pt-8">
+          <div class="mb-5 inline-flex rounded-full border border-emerald-300/35 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-100">
+            Ремонт котлов · {{ regionName }} и область
+          </div>
+          <h1 class="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">{{ title }}</h1>
+          <p class="mt-5 max-w-2xl text-lg leading-8 text-white/86">
+            Диагностика неисправностей, ремонт по кодам ошибок и обслуживание настенных котлов Protherm, Baxi и Navien.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a :href="phoneHref" class="rounded-lg bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-950/30 hover:bg-emerald-400">
+              Позвонить мастеру
+            </a>
+            <a href="#brands" class="rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/15">
+              Выбрать марку котла
+            </a>
+          </div>
+
+          <div class="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
+            <div v-for="item in stats" :key="item" class="rounded-lg border border-white/14 bg-white/10 px-4 py-3 text-sm font-semibold backdrop-blur">
+              {{ item }}
+            </div>
+          </div>
+        </div>
+
+        <aside class="rounded-lg border border-white/15 bg-white/10 p-5 backdrop-blur md:p-6">
+          <div class="text-sm font-semibold text-emerald-200">Быстрая заявка</div>
+          <div class="mt-3 text-2xl font-black leading-tight">Котел показывает ошибку?</div>
+          <p class="mt-3 text-sm leading-6 text-white/75">
+            Назовите марку и код на дисплее. Мастер подскажет безопасные проверки и сориентирует по выезду.
+          </p>
+          <a :href="phoneHref" class="mt-5 block rounded-lg bg-white px-5 py-3 text-center text-sm font-black text-neutral-950 hover:bg-emerald-50">
+            {{ phone }}
+          </a>
+        </aside>
+      </div>
+    </section>
+
+    <section id="brands" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 class="text-3xl font-black tracking-tight">Ремонт по маркам</h2>
+          <p class="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">
+            Отдельные страницы по брендам помогают быстро перейти к нужным кодам ошибок и типовым неисправностям.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-4 lg:grid-cols-3">
+        <article v-for="brand in brandCards" :key="brand.slug" class="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
+          <div class="flex min-h-14 items-center justify-between gap-4">
+            <img :src="brand.logo" :alt="`Логотип ${brand.name}`" class="max-h-12 max-w-36 object-contain" />
+            <span class="rounded-full bg-neutral-100 px-3 py-1 text-xs font-bold text-neutral-600">{{ brand.codes.length }} кодов</span>
+          </div>
+          <h3 class="mt-5 text-xl font-black">Ремонт котлов {{ brand.name }}</h3>
+          <p class="mt-2 text-sm leading-6 text-neutral-600">Диагностика, ошибки, датчики, розжиг, циркуляция и электронные узлы {{ brand.name }}.</p>
+          <NuxtLink :to="`/${region}/remont/${brand.slug}/`" class="mt-5 inline-flex rounded-lg bg-neutral-950 px-4 py-3 text-sm font-bold text-white hover:bg-neutral-800">
+            Страница бренда
+          </NuxtLink>
+        </article>
+      </div>
+    </section>
+
+    <section class="bg-neutral-50 py-10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-black tracking-tight">Услуги</h2>
+        <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <NuxtLink
+            v-for="service in repairServicePages"
+            :key="service.slug"
+            :to="`/${region}/uslugi/${service.slug}/`"
+            class="rounded-lg border border-neutral-200 bg-white p-5 text-neutral-950 shadow-sm hover:border-emerald-300"
+          >
+            <h3 class="text-lg font-black">{{ service.title }}</h3>
+            <p class="mt-2 text-sm leading-6 text-neutral-600">{{ service.lead }}</p>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="grid gap-6 lg:grid-cols-[360px_1fr]">
+        <div>
+          <h2 class="text-3xl font-black tracking-tight">Популярные ошибки</h2>
+          <p class="mt-3 text-sm leading-6 text-neutral-600">
+            Быстрые переходы на частые коды. На каждой странице есть причины, безопасные действия и ссылка на другие ошибки этой марки.
+          </p>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <NuxtLink
+            v-for="item in popularErrors"
+            :key="`${item.slug}-${item.code}`"
+            :to="`/${region}/remont/${item.slug}/oshybka-${item.code.toLowerCase()}/`"
+            class="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm hover:border-emerald-300 hover:bg-emerald-50"
+          >
+            <div class="text-sm font-bold text-emerald-700">{{ item.brand }} {{ item.code }}</div>
+            <div class="mt-2 text-base font-black leading-snug">Ошибка {{ item.code }}</div>
+            <div class="mt-1 text-sm leading-6 text-neutral-600">{{ item.text }}</div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div class="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm md:p-7">
+        <h2 class="text-3xl font-black tracking-tight">Все коды ошибок</h2>
+        <div class="mt-6 grid gap-6 lg:grid-cols-3">
+          <div v-for="brand in brandCards" :key="brand.slug" class="rounded-lg bg-neutral-50 p-4">
+            <div class="flex items-center gap-3">
+              <img :src="brand.logo" :alt="`Логотип ${brand.name}`" class="max-h-9 max-w-28 object-contain" />
+              <h3 class="text-lg font-black">{{ brand.name }}</h3>
+            </div>
+            <div class="mt-4 grid grid-cols-4 gap-2">
+              <NuxtLink
+                v-for="code in brand.codes"
+                :key="code"
+                :to="`/${region}/remont/${brand.slug}/oshybka-${code.toLowerCase()}/`"
+                class="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-center text-sm font-bold text-neutral-900 hover:border-emerald-300 hover:bg-emerald-50"
+              >
+                {{ code }}
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-5 rounded-lg bg-neutral-950 p-5 text-white md:flex-row md:items-center md:justify-between md:p-7">
+        <div>
+          <h2 class="text-2xl font-black tracking-tight">Нужен мастер по котлу?</h2>
+          <p class="mt-2 text-sm leading-6 text-neutral-300">Позвоните, назовите марку котла и код ошибки. Выезд по {{ regionPrep }} и области.</p>
+        </div>
+        <a :href="phoneHref" class="rounded-lg bg-emerald-500 px-5 py-3 text-center text-sm font-black text-white hover:bg-emerald-400">
+          {{ phone }}
+        </a>
+      </div>
+    </section>
   </main>
 </template>

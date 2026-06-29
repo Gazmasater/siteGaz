@@ -5,19 +5,16 @@ const phoneHref = "tel:+79330917276";
 const currentYear = new Date().getFullYear();
 
 const serviceLinks = [
-  { label: "Ремонт газовых котлов", to: "/" },
-  { label: "Обслуживание котлов", to: "/" },
-  { label: "Чистка теплообменника", to: "/" },
-  { label: "Замена платы управления", to: "/" },
+  { label: "Ремонт газовых котлов", to: "/lipeck/uslugi/remont-gazovyh-kotlov/" },
+  { label: "Обслуживание котлов", to: "/lipeck/uslugi/obsluzhivanie-kotlov/" },
+  { label: "Чистка теплообменника", to: "/lipeck/uslugi/chistka-teploobmennika/" },
+  { label: "Замена платы управления", to: "/lipeck/uslugi/zamena-platy-kotla/" },
 ];
 
 const brandLinks = [
-  "Baxi",
-  "Navien",
-  "Ariston",
-  "Bosch",
-  "Vaillant",
-  "Protherm",
+  { label: "Baxi", to: "/lipeck/remont/baxi/" },
+  { label: "Navien", to: "/lipeck/remont/navien/" },
+  { label: "Protherm", to: "/lipeck/remont/protherm/" },
 ];
 </script>
 
@@ -109,13 +106,14 @@ const brandLinks = [
         <section class="min-w-0 w-full max-w-sm justify-self-start">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-400">Марки котлов</h2>
           <div class="mt-5 grid w-full grid-cols-2 gap-2 text-sm">
-            <span
+            <NuxtLink
               v-for="brand in brandLinks"
-              :key="brand"
-              class="rounded-full border border-white/10 px-3 py-1 text-center text-neutral-300"
+              :key="brand.label"
+              :to="brand.to"
+              class="rounded-full border border-white/10 px-3 py-1 text-center text-neutral-300 hover:border-yellow-300/40 hover:text-yellow-300"
             >
-              {{ brand }}
-            </span>
+              {{ brand.label }}
+            </NuxtLink>
           </div>
         </section>
 
@@ -182,4 +180,3 @@ const brandLinks = [
   }
 }
 </style>
-

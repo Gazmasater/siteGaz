@@ -1,11 +1,66 @@
 <script setup lang="ts">
+const title = "Ремонт газовых котлов в Липецке";
+const description =
+  "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: +7 (933) 091-72-76.";
+const canonical = "https://remontkotlov48.ru/";
+
 useHead({
-  title: "Ремонт газовых котлов в Липецке",
+  title,
   meta: [
+    { name: "description", content: description },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: canonical },
+    { property: "og:image", content: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.png" },
+  ],
+  link: [{ rel: "canonical", href: canonical }],
+  script: [
     {
-      name: "description",
-      content:
-        "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: +7 (933) 091-72-76.",
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: "Gazmaster",
+        description,
+        url: canonical,
+        image: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.png",
+        telephone: "+7 (933) 091-72-76",
+        priceRange: "$$",
+        areaServed: {
+          "@type": "City",
+          name: "Липецк",
+        },
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Липецк",
+          addressCountry: "RU",
+        },
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            opens: "08:00",
+            closes: "22:00",
+          },
+        ],
+        makesOffer: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Ремонт газовых котлов",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Обслуживание газовых котлов",
+            },
+          },
+        ],
+      }),
     },
   ],
 });
@@ -14,11 +69,15 @@ useHead({
 <template>
   <main class="page">
     <section class="hero">
-      <img
-        src="/img/header-boiler-generated-79330917276.png"
-        alt="Мастер ремонтирует газовый котёл"
-        class="hero-image"
-      />
+      <picture>
+        <source srcset="/img/header-boiler-generated-79330917276.avif" type="image/avif" />
+        <source srcset="/img/header-boiler-generated-79330917276.webp" type="image/webp" />
+        <img
+          src="/img/header-boiler-generated-79330917276.png"
+          alt="Мастер ремонтирует газовый котёл"
+          class="hero-image"
+        />
+      </picture>
       <div class="hero-content">
         <p class="hero-title">Ремонт газовых котлов<br />в Липецке</p>
         <ul class="hero-list">

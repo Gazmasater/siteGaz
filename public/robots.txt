@@ -1,2 +1,5 @@
 User-Agent: *
 Disallow:
+
+Host: remontkotlov48.ru
+Sitemap: https://remontkotlov48.ru/sitemap.xml

@@ -19,6 +19,16 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const heroSrc = computed(() => props.img || props.desktopSrc)
+const heroAvifSrc = computed(() =>
+  heroSrc.value === '/img/header-boiler-generated-79330917276.png'
+    ? '/img/header-boiler-generated-79330917276.avif'
+    : '',
+)
+const heroWebpSrc = computed(() =>
+  heroSrc.value === '/img/header-boiler-generated-79330917276.png'
+    ? '/img/header-boiler-generated-79330917276.webp'
+    : '',
+)
 const phoneHref = 'tel:+79330917276'
 </script>
 
@@ -26,6 +36,8 @@ const phoneHref = 'tel:+79330917276'
   <section class="relative isolate min-h-[680px] overflow-hidden bg-neutral-950 text-white">
     <picture>
       <source v-if="props.mobileSrc" media="(max-width: 768px)" :srcset="props.mobileSrc" />
+      <source v-if="heroAvifSrc" :srcset="heroAvifSrc" type="image/avif" />
+      <source v-if="heroWebpSrc" :srcset="heroWebpSrc" type="image/webp" />
       <img
         :src="heroSrc"
         :alt="props.alt"
@@ -45,7 +57,7 @@ const phoneHref = 'tel:+79330917276'
         </div>
 
         <div class="mb-5 inline-flex items-center rounded-full border border-emerald-300/35 bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-100">
-          Авторизованный подход к диагностике Protherm
+          Профессиональная диагностика котлов
         </div>
 
         <h1 class="max-w-3xl text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
