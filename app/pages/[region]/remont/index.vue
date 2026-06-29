@@ -32,16 +32,19 @@ const stats = [
 
 const title = `Ремонт газовых котлов в ${regionPrep}`;
 const description = `Ремонт и диагностика газовых котлов Protherm, Baxi, Navien в ${regionPrep}. Разбор кодов ошибок, выезд мастера и согласование стоимости до ремонта.`;
+const canonicalUrl = `https://remontkotlov48.ru/${region}/remont/`;
+const keywords = `ремонт газовых котлов ${regionName}, ремонт котлов ${regionName}, ошибки котлов Protherm, ошибки котлов Baxi, ошибки котлов Navien, мастер по котлам ${regionName}`;
 
 useHead({
   title: `${title} — ошибки, бренды и услуги`,
   meta: [
     { name: "description", content: description },
+    { name: "keywords", content: keywords },
     { property: "og:title", content: `${title} — ошибки, бренды и услуги` },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
   ],
-  link: [{ rel: "canonical", href: `https://remontkotlov48.ru/${region}/remont/` }],
+  link: [{ rel: "canonical", href: canonicalUrl }],
   script: [
     {
       type: "application/ld+json",
@@ -62,8 +65,29 @@ useHead({
           "@type": "Offer",
           availability: "https://schema.org/InStock",
           priceCurrency: "RUB",
-          url: `https://remontkotlov48.ru/${region}/remont/`,
+          url: canonicalUrl,
         },
+      }),
+    },
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Главная",
+            item: "https://remontkotlov48.ru/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: title,
+            item: canonicalUrl,
+          },
+        ],
       }),
     },
   ],
