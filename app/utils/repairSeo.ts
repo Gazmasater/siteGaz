@@ -115,3 +115,7 @@ export function regionTitle(region: string) {
 export function regionPrepTitle(region: string) {
   return region === "lipeck" ? "Липецке" : regionTitle(region);
 }
+
+export function regionRouteTitle(region: string) {
+  return region === "lipeck" ? "Липецку" : regionTitle(region);
+}

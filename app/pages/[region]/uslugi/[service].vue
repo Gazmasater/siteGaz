@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { brandErrorCodes, regionPrepTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
+import { brandErrorCodes, regionPrepTitle, regionRouteTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
 
 const route = useRoute();
 const region = String(route.params.region || "");
@@ -8,12 +8,13 @@ const serviceSlug = String(route.params.service || "");
 const service = repairServicePages.find((item) => item.slug === serviceSlug);
 const regionName = regionTitle(region);
 const regionPrep = regionPrepTitle(region);
+const regionRoute = regionRouteTitle(region);
 
 if (!service) throw createError({ statusCode: 404, statusMessage: "Not found" });
 
 const canonical = `https://remontkotlov48.ru/${region}/uslugi/${service.slug}/`;
 const title = `${service.title} в ${regionPrep}`;
-const description = `${service.lead} Выезд мастера по ${regionPrep}, диагностика и согласование стоимости до ремонта.`;
+const description = `${service.lead} Выезд мастера по ${regionRoute}, диагностика и согласование стоимости до ремонта.`;
 const popularLinks = repairBrands.flatMap((brand) =>
   (brandErrorCodes[brand.slug] || []).slice(0, 4).map((code) => ({
     title: `${brand.name} ${code}`,

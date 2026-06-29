@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { brandErrorCodes, regionPrepTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
+import { brandErrorCodes, regionPrepTitle, regionRouteTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
 
 const route = useRoute();
 const region = String(route.params.region || "");
 const regionName = regionTitle(region);
 const regionPrep = regionPrepTitle(region);
+const regionRoute = regionRouteTitle(region);
 const phone = "+7 (933) 091-72-76";
 const phoneHref = "tel:+79330917276";
 
@@ -218,7 +219,7 @@ useHead({
       <div class="flex flex-col gap-5 rounded-lg bg-neutral-950 p-5 text-white md:flex-row md:items-center md:justify-between md:p-7">
         <div>
           <h2 class="text-2xl font-black tracking-tight">Нужен мастер по котлу?</h2>
-          <p class="mt-2 text-sm leading-6 text-neutral-300">Позвоните, назовите марку котла и код ошибки. Выезд по {{ regionPrep }} и области.</p>
+          <p class="mt-2 text-sm leading-6 text-neutral-300">Позвоните, назовите марку котла и код ошибки. Выезд по {{ regionRoute }} и области.</p>
         </div>
         <a :href="phoneHref" class="rounded-lg bg-emerald-500 px-5 py-3 text-center text-sm font-black text-white hover:bg-emerald-400">
           {{ phone }}
