@@ -89,6 +89,27 @@ const navienWallMountedErrorCodes = [
   "93",
   "218",
 ];
+const viessmannWallMountedErrorCodes = [
+  "f2",
+  "f3",
+  "f4",
+  "f5",
+  "f6",
+  "f8",
+  "b0",
+  "b8",
+  "30",
+  "38",
+  "51",
+  "59",
+  "50",
+  "58",
+  "0c",
+  "0e",
+  "0a",
+  "03-serv",
+  "serv",
+];
 const brandLandingRoutes = repairBrands.map((brand) => `/lipeck/remont/${brand.slug}/`);
 const serviceLandingRoutes = repairServicePages.map((service) => `/lipeck/uslugi/${service.slug}/`);
 
@@ -108,6 +129,7 @@ export default defineNuxtConfig({
         ...prothermWallMountedErrorCodes.map((code) => `/lipeck/remont/protherm/oshybka-${code}/`),
         ...baxiWallMountedErrorCodes.map((code) => `/lipeck/remont/baxi/oshybka-${code}/`),
         ...navienWallMountedErrorCodes.map((code) => `/lipeck/remont/navien/oshybka-${code}/`),
+        ...viessmannWallMountedErrorCodes.map((code) => `/lipeck/remont/viessmann/oshybka-${code}/`),
       ],
     },
   },

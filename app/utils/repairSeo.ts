@@ -2,6 +2,7 @@ export const repairBrands = [
   { slug: "protherm", name: "Protherm", logo: "/img/brands/protherm-logo.png" },
   { slug: "baxi", name: "Baxi", logo: "/img/brands/baxi-logo.jpg" },
   { slug: "navien", name: "Navien", logo: "/img/brands/navien-logo.png" },
+  { slug: "viessmann", name: "Viessmann", logo: "/img/brands/viessmann-logo.svg" },
 ];
 
 export const repairServicePages = [
@@ -106,7 +107,12 @@ export const brandErrorCodes: Record<string, string[]> = {
     "93",
     "218",
   ],
+  viessmann: ["F2", "F3", "F4", "F5", "F6", "F8", "B0", "B8", "30", "38", "51", "59", "50", "58", "0C", "0E", "0A", "03-SERV", "SERV"],
 };
+
+export function displayErrorCode(code: string) {
+  return code.toLowerCase() === "03-serv" ? "03 + SERV" : code.toUpperCase();
+}
 
 export function regionTitle(region: string) {
   return region === "lipeck" ? "Липецк" : region;

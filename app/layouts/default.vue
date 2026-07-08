@@ -15,6 +15,7 @@ const brandLinks = [
   { label: "Baxi", to: "/lipeck/remont/baxi/" },
   { label: "Navien", to: "/lipeck/remont/navien/" },
   { label: "Protherm", to: "/lipeck/remont/protherm/" },
+  { label: "Viessmann", to: "/lipeck/remont/viessmann/" },
 ];
 </script>
 

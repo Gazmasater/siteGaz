@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { brandErrorCodes, regionPrepTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
+import { brandErrorCodes, displayErrorCode, regionPrepTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
 
 const route = useRoute();
 const region = String(route.params.region || "");
@@ -107,7 +107,7 @@ useHead({
             :to="`/${region}/remont/${brand.slug}/oshybka-${code.toLowerCase()}/`"
             class="rounded-lg border border-neutral-200 px-4 py-3 text-sm font-bold text-neutral-900 hover:border-emerald-300 hover:bg-emerald-50"
           >
-            Ошибка {{ code }}
+            Ошибка {{ displayErrorCode(code) }}
           </NuxtLink>
         </div>
       </div>

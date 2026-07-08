@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { brandErrorCodes, regionPrepTitle, regionRouteTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
+import { brandErrorCodes, displayErrorCode, regionPrepTitle, regionRouteTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
 
 const route = useRoute();
 const region = String(route.params.region || "");
@@ -31,9 +31,9 @@ const stats = [
 ];
 
 const title = `Ремонт газовых котлов в ${regionPrep}`;
-const description = `Ремонт и диагностика газовых котлов Protherm, Baxi, Navien в ${regionPrep}. Разбор кодов ошибок, выезд мастера и согласование стоимости до ремонта.`;
+const description = `Ремонт и диагностика газовых котлов Protherm, Baxi, Navien, Viessmann в ${regionPrep}. Разбор кодов ошибок, выезд мастера и согласование стоимости до ремонта.`;
 const canonicalUrl = `https://remontkotlov48.ru/${region}/remont/`;
-const keywords = `ремонт газовых котлов ${regionName}, ремонт котлов ${regionName}, ошибки котлов Protherm, ошибки котлов Baxi, ошибки котлов Navien, мастер по котлам ${regionName}`;
+const keywords = `ремонт газовых котлов ${regionName}, ремонт котлов ${regionName}, ошибки котлов Protherm, ошибки котлов Baxi, ошибки котлов Navien, ошибки котлов Viessmann, мастер по котлам ${regionName}`;
 
 useHead({
   title: `${title} — ошибки, бренды и услуги`,
@@ -118,7 +118,7 @@ useHead({
           </div>
           <h1 class="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">{{ title }}</h1>
           <p class="mt-5 max-w-2xl text-lg leading-8 text-white/86">
-            Диагностика неисправностей, ремонт по кодам ошибок и обслуживание настенных котлов Protherm, Baxi и Navien.
+            Диагностика неисправностей, ремонт по кодам ошибок и обслуживание настенных котлов Protherm, Baxi, Navien и Viessmann.
           </p>
 
           <div class="mt-8 flex flex-wrap gap-3">
@@ -231,7 +231,7 @@ useHead({
                 :to="`/${region}/remont/${brand.slug}/oshybka-${code.toLowerCase()}/`"
                 class="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-center text-sm font-bold text-neutral-900 hover:border-emerald-300 hover:bg-emerald-50"
               >
-                {{ code }}
+                  {{ displayErrorCode(code) }}
               </NuxtLink>
             </div>
           </div>

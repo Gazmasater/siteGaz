@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { brandErrorCodes, repairBrands, repairServicePages } from "~/utils/repairSeo";
+import { brandErrorCodes, displayErrorCode, repairBrands, repairServicePages } from "~/utils/repairSeo";
 
 const route = useRoute();
 const region = String(route.params.region || "");
@@ -53,7 +53,7 @@ useJsonLd(page);
                 :to="`/${region}/remont/${brand}/oshybka-${relatedCode.toLowerCase()}/`"
                 class="rounded-lg border bg-white px-4 py-3 text-sm font-bold text-neutral-900 hover:border-emerald-300 hover:bg-emerald-50"
               >
-                {{ relatedCode }}
+                {{ displayErrorCode(relatedCode) }}
               </NuxtLink>
             </div>
             <NuxtLink
