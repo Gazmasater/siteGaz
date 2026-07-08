@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { brandErrorCodes, displayErrorCode, repairBrands, repairServicePages } from "~/utils/repairSeo";
+import { brandErrorCodes, displayErrorCode, regionRouteTitle, regionTitle, repairBrands, repairServicePages } from "~/utils/repairSeo";
 
 const route = useRoute();
 const region = String(route.params.region || "");
 const brand = String(route.params.brand || "");
 const code = String(route.params.code || "");
 const brandMeta = repairBrands.find((item) => item.slug === brand);
+const regionName = regionTitle(region);
+const regionRoute = regionRouteTitle(region);
+const brandFullName = computed(() =>
+  brandMeta && "alias" in brandMeta && brandMeta.alias ? `${brandMeta.name} / ${brandMeta.alias}` : brandMeta?.name || brand,
+);
 const allCodes = brandErrorCodes[brand] || [];
 const currentIndex = allCodes.findIndex((item) => item.toLowerCase() === code.toLowerCase());
 const relatedCodes = computed(() => {
@@ -81,5 +86,13 @@ useJsonLd(page);
         </div>
       </div>
     </section>
+
+    <LocalTrustBlock
+      :region="regionName"
+      :region-route="regionRoute"
+      :brand="brandFullName"
+      :service="`ремонту котлов ${brandFullName}`"
+      compact
+    />
   </div>
 </template>

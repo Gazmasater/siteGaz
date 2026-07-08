@@ -53,6 +53,10 @@ type ErrorInfo = {
   faq: { q: string; a: string }[];
 };
 
+const yandexMapsUrl = "https://yandex.ru/maps/org/gazmaster/165084897107/?ll=39.535637%2C52.603696&z=16";
+const yandexServicesUrl =
+  "https://uslugi.yandex.ru/profile/Gazmaster-108825?occupationId=%2Fremont-i-ustanovka-tehniki&specId=%2Fremont-i-ustanovka-tehniki%2Fdrugoe&text=%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%B3%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85+%D0%BA%D0%BE%D1%82%D0%BB%D0%BE%D0%B2";
+
 function cap(s: string): string {
   if (!s) return s;
   return s.slice(0, 1).toUpperCase() + s.slice(1);
@@ -125,6 +129,16 @@ function makeLocalBusiness(region: string, brand: string, phone: string): Record
     name: `Ремонт котлов ${brand} в ${regionPrep}`,
     areaServed: region,
     telephone: phone,
+    hasMap: yandexMapsUrl,
+    sameAs: [yandexMapsUrl, yandexServicesUrl],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "49",
+      ratingCount: "55",
+      bestRating: "5",
+      worstRating: "1",
+    },
     address: {
       "@type": "PostalAddress",
       addressLocality: region,
@@ -1775,6 +1789,91 @@ function viessmannErrorInfo(code: string, regionPrep: string): ErrorInfo {
   };
 }
 
+function vaillantErrorInfo(code: string, regionPrep: string): ErrorInfo {
+  const errors: Record<string, { label: string; faults: string[] }> = {
+    F20: {
+      label: "срабатывание датчика STB",
+      faults: ["Датчик NTC неисправен или неправильно подключён", "Котёл не отключается"],
+    },
+    F22: {
+      label: "сухой ход",
+      faults: ["Недостаточно воды в котле", "Повреждён кабель насоса", "Насос заклинило или он неисправен", "Слабая циркуляция воды", "Неисправен датчик NTC", "Неисправна электронная плата"],
+    },
+    F23: {
+      label: "недостаток воды, определённый по разнице температур подачи и обратки",
+      faults: ["Недостаточно воды в котле", "Повреждён кабель насоса", "Насос неисправен или заблокирован", "Слабая циркуляция воды", "Неисправен датчик NTC", "Неисправна электронная плата"],
+    },
+    F24: {
+      label: "недостаток воды и слишком высокая температура подачи",
+      faults: ["Недостаточно воды в котле", "Повреждён кабель насоса", "Насос заклинило или он неисправен", "Слабая циркуляция воды"],
+    },
+    F27: {
+      label: "постороннее пламя при закрытом газовом вентиле",
+      faults: ["Неисправен газовый магнитный вентиль", "Неисправен контроль наличия пламени", "Неисправна электронная плата"],
+    },
+    F28: {
+      label: "блокировка розжига: котёл не запускается",
+      faults: ["Нет или недостаточно газа", "Неисправен газовый счётчик или предохранитель давления", "В газовой линии есть воздух", "Закрыт предохранительный вентиль", "Неисправна газовая арматура", "Неправильное подключение к газопроводу", "Неисправен трансформатор розжига", "Повреждены кабель или электрод ионизации"],
+    },
+    F29: {
+      label: "отказ в рабочем режиме: пламя погасло, повторный розжиг не удался",
+      faults: ["Временно прекращена подача газа", "Неисправен трансформатор розжига", "Возникает рециркуляция отходящих газов", "Неправильно подключено заземление"],
+    },
+    F60: {
+      label: "газовый вентиль — ошибка 1",
+      faults: ["Неисправна электроника", "Индикатор включения на панели не загорается"],
+    },
+    F61: {
+      label: "газовый вентиль — ошибка 2",
+      faults: ["Неисправна электроника", "Индикатор включения на панели не загорается"],
+    },
+    F70: {
+      label: "недействительный номер исполнения котла для дисплея или электроники",
+      faults: ["Одновременно заменены дисплей и электроника", "После замены не введён номер исполнения котла"],
+    },
+    F71: {
+      label: "показания датчика подающей линии не изменяются",
+      faults: ["Неисправен датчик температуры подающей линии"],
+    },
+    F73: {
+      label: "слишком низкий или неверный сигнал датчика давления воды",
+      faults: ["Обрыв цепи датчика давления", "Короткое замыкание на 0 В", "Неисправен датчик давления воды"],
+    },
+    F75: {
+      label: "после пяти запусков насоса не определяется рост давления более 50 мбар",
+      faults: ["Неисправен датчик давления воды", "Неисправен насос", "В системе отопления есть воздух", "Низкое давление воды в котле", "Расширительный бак подключён к подающей линии"],
+    },
+    F77: {
+      label: "максимальный уровень воды в насосе конденсата или нет обратной связи от модуля 2 из 7",
+      faults: ["Неисправен насос отвода конденсата", "Получен сигнал обратной связи от клапана отходящих газов", "Ошибка связана с подключёнными принадлежностями"],
+    },
+    F82: {
+      label: "ошибка устройства контроля анода с внешним питанием",
+      faults: ["Разъём анода не подключён или вставлен неправильно", "Неисправен анод", "Нарушено электрическое соединение контактов или электроники", "Неисправен кабель"],
+    },
+    FXX: {
+      label: "код отсутствует в списке ошибок",
+      faults: ["Возможна ошибка программного обеспечения"],
+    },
+  };
+
+  const info = errors[code.toUpperCase()] || errors.FXX!;
+  return {
+    label: info.label,
+    intro: `Ошибка ${code} на котле Vaillant означает: ${info.label}. В ${regionPrep} точную причину определяют после проверки модели, подключений и связанных узлов.`,
+    causes: info.faults.map((title, index) => ({ title, probability: Math.max(0.1, 0.35 - index * 0.04) })),
+    steps: [
+      { title: "Запишите код и точную модель котла", safety: "low", can_user_do: true },
+      { title: "Проверьте давление воды и доступные внешние подключения", safety: "low", can_user_do: true },
+      { title: "Не разбирайте газовую арматуру и электронику — вызовите мастера", safety: "high", can_user_do: false },
+    ],
+    faq: [
+      { q: `Что означает ошибка ${code} Vaillant?`, a: `Код означает: ${info.label}. Возможные причины перечислены выше.` },
+      { q: "Можно ли сбросить ошибку?", a: "Допустим один сброс по инструкции. Если код появляется снова, требуется диагностика." },
+    ],
+  };
+}
+
 function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw: string): PageDto {
   const regionSlugNorm = regionSlug.toLowerCase();
   const brandSlugNorm = brandSlug.toLowerCase();
@@ -1955,6 +2054,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
   const isProtherm = brandSlugNorm === "protherm";
   const isBaxi = brandSlugNorm === "baxi";
   const isNavien = brandSlugNorm === "navien";
+  const isVaillant = brandSlugNorm === "vaillant";
   const isViessmann = brandSlugNorm === "viessmann";
   const errorInfo = isProtherm
     ? prothermErrorInfo(code, regionPrep)
@@ -1962,7 +2062,9 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
       ? baxiErrorInfo(code, regionPrep)
       : isNavien
         ? navienErrorInfo(code, regionPrep)
-        : isViessmann
+        : isVaillant
+          ? vaillantErrorInfo(code, regionPrep)
+          : isViessmann
           ? viessmannErrorInfo(code, regionPrep)
           : undefined;
   const logo = isProtherm
@@ -1971,10 +2073,12 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
       ? "/img/brands/baxi-logo.jpg"
       : isNavien
         ? "/img/brands/navien-logo.png"
-        : isViessmann
+        : isVaillant
+          ? "/img/brands/vaillant-logo.png"
+          : isViessmann
           ? "/img/brands/viessmann-logo.svg"
           : undefined;
-  const logoAlt = isProtherm ? "Логотип Protherm" : isBaxi ? "Логотип Baxi" : isNavien ? "Логотип Navien" : isViessmann ? "Логотип Viessmann" : undefined;
+  const logoAlt = isProtherm ? "Логотип Protherm" : isBaxi ? "Логотип Baxi" : isNavien ? "Логотип Navien" : isVaillant ? "Логотип Vaillant" : isViessmann ? "Логотип Viessmann" : undefined;
   const blocks = makeCommonBlocks({
     region,
     regionPrep,
@@ -1982,7 +2086,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
     brand,
     brandSlug: brandSlugNorm,
     code,
-    heroImg: isProtherm || isBaxi || isNavien || isViessmann ? "/img/header-boiler-generated-79330917276.png" : `/img/repair/${brandSlugNorm}/hero.jpg`,
+    heroImg: isProtherm || isBaxi || isNavien || isVaillant || isViessmann ? "/img/header-boiler-generated-79330917276.png" : `/img/repair/${brandSlugNorm}/hero.jpg`,
     logo,
     logoAlt,
     intro: errorInfo?.intro || `Страница по ошибке ${code} для котлов ${brand}. Причины, проверки, цены и сроки ремонта в ${regionPrep}.`,

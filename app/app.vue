@@ -10,9 +10,9 @@ useHead({
         }
         k=e.createElement(t),a=e.getElementsByTagName(t)[0],
         k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108736994','ym');
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=109241845','ym');
 
-      ym(108736994, 'init', {
+      ym(109241845, 'init', {
         ssr:true,
         webvisor:true,
         clickmap:true,
@@ -27,7 +27,7 @@ useHead({
   ],
   noscript: [
     {
-      innerHTML: '<div><img src="https://mc.yandex.ru/watch/108736994" style="position:absolute; left:-9999px;" alt="" /></div>'
+      innerHTML: '<div><img src="https://mc.yandex.ru/watch/109241845" style="position:absolute; left:-9999px;" alt="" /></div>'
     }
   ]
 })

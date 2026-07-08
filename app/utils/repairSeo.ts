@@ -1,7 +1,8 @@
 export const repairBrands = [
-  { slug: "protherm", name: "Protherm", logo: "/img/brands/protherm-logo.png" },
+  { slug: "protherm", name: "Protherm", alias: "Протерм", logo: "/img/brands/protherm-logo.png" },
   { slug: "baxi", name: "Baxi", logo: "/img/brands/baxi-logo.jpg" },
   { slug: "navien", name: "Navien", logo: "/img/brands/navien-logo.png" },
+  { slug: "vaillant", name: "Vaillant", alias: "Вайлант", logo: "/img/brands/vaillant-logo.png" },
   { slug: "viessmann", name: "Viessmann", logo: "/img/brands/viessmann-logo.svg" },
 ];
 
@@ -107,6 +108,7 @@ export const brandErrorCodes: Record<string, string[]> = {
     "93",
     "218",
   ],
+  vaillant: ["F20", "F22", "F23", "F24", "F27", "F28", "F29", "F60", "F61", "F70", "F71", "F73", "F75", "F77", "F82", "FXX"],
   viessmann: ["F2", "F3", "F4", "F5", "F6", "F8", "B0", "B8", "30", "38", "51", "59", "50", "58", "0C", "0E", "0A", "03-SERV", "SERV"],
 };
 

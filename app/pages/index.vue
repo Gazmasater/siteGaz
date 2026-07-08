@@ -3,6 +3,9 @@ const title = "Ремонт газовых котлов в Липецке";
 const description =
   "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: +7 (933) 091-72-76.";
 const canonical = "https://remontkotlov48.ru/";
+const yandexMapsUrl = "https://yandex.ru/maps/org/gazmaster/165084897107/?ll=39.535637%2C52.603696&z=16";
+const yandexServicesUrl =
+  "https://uslugi.yandex.ru/profile/Gazmaster-108825?occupationId=%2Fremont-i-ustanovka-tehniki&specId=%2Fremont-i-ustanovka-tehniki%2Fdrugoe&text=%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%B3%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85+%D0%BA%D0%BE%D1%82%D0%BB%D0%BE%D0%B2";
 
 useHead({
   title,
@@ -24,6 +27,16 @@ useHead({
         name: "Gazmaster",
         description,
         url: canonical,
+        hasMap: yandexMapsUrl,
+        sameAs: [yandexMapsUrl, yandexServicesUrl],
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          reviewCount: "49",
+          ratingCount: "55",
+          bestRating: "5",
+          worstRating: "1",
+        },
         image: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.png",
         telephone: "+7 (933) 091-72-76",
         priceRange: "$$",
@@ -156,6 +169,8 @@ useHead({
         </div>
       </div>
     </section>
+
+    <LocalTrustBlock region="Липецк" region-route="Липецку" service="ремонту газовых котлов" />
   </main>
 </template>
 

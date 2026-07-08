@@ -9,6 +9,9 @@ const service = repairServicePages.find((item) => item.slug === serviceSlug);
 const regionName = regionTitle(region);
 const regionPrep = regionPrepTitle(region);
 const regionRoute = regionRouteTitle(region);
+const yandexMapsUrl = "https://yandex.ru/maps/org/gazmaster/165084897107/?ll=39.535637%2C52.603696&z=16";
+const yandexServicesUrl =
+  "https://uslugi.yandex.ru/profile/Gazmaster-108825?occupationId=%2Fremont-i-ustanovka-tehniki&specId=%2Fremont-i-ustanovka-tehniki%2Fdrugoe&text=%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%B3%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85+%D0%BA%D0%BE%D1%82%D0%BB%D0%BE%D0%B2";
 
 if (!service) throw createError({ statusCode: 404, statusMessage: "Not found" });
 
@@ -45,6 +48,16 @@ useHead({
           "@type": "LocalBusiness",
           name: "Ремонт котлов 48",
           telephone: "+7 (933) 091-72-76",
+          hasMap: yandexMapsUrl,
+          sameAs: [yandexMapsUrl, yandexServicesUrl],
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.9",
+            reviewCount: "49",
+            ratingCount: "55",
+            bestRating: "5",
+            worstRating: "1",
+          },
           address: { "@type": "PostalAddress", addressLocality: regionName, addressCountry: "RU" },
         },
         offers: { "@type": "Offer", availability: "https://schema.org/InStock", priceCurrency: "RUB", url: canonical },
@@ -102,6 +115,8 @@ useHead({
         <p class="mt-3 text-sm leading-6 text-neutral-600">Устраняем неисправность, проверяем запуск, отопление и горячую воду.</p>
       </article>
     </section>
+
+    <LocalTrustBlock :region="regionName" :region-route="regionRoute" :service="service.title.toLowerCase()" compact />
 
     <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-5 md:p-7">

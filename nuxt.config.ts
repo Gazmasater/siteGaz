@@ -110,6 +110,10 @@ const viessmannWallMountedErrorCodes = [
   "03-serv",
   "serv",
 ];
+const vaillantWallMountedErrorCodes = [
+  "f20", "f22", "f23", "f24", "f27", "f28", "f29", "f60",
+  "f61", "f70", "f71", "f73", "f75", "f77", "f82", "fxx",
+];
 const brandLandingRoutes = repairBrands.map((brand) => `/lipeck/remont/${brand.slug}/`);
 const serviceLandingRoutes = repairServicePages.map((service) => `/lipeck/uslugi/${service.slug}/`);
 
@@ -129,6 +133,7 @@ export default defineNuxtConfig({
         ...prothermWallMountedErrorCodes.map((code) => `/lipeck/remont/protherm/oshybka-${code}/`),
         ...baxiWallMountedErrorCodes.map((code) => `/lipeck/remont/baxi/oshybka-${code}/`),
         ...navienWallMountedErrorCodes.map((code) => `/lipeck/remont/navien/oshybka-${code}/`),
+        ...vaillantWallMountedErrorCodes.map((code) => `/lipeck/remont/vaillant/oshybka-${code}/`),
         ...viessmannWallMountedErrorCodes.map((code) => `/lipeck/remont/viessmann/oshybka-${code}/`),
       ],
     },

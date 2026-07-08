@@ -13,8 +13,12 @@ if (!brand) throw createError({ statusCode: 404, statusMessage: "Not found" });
 
 const codes = brandErrorCodes[brandSlug] || [];
 const canonical = `https://remontkotlov48.ru/${region}/remont/${brandSlug}/`;
-const title = `Ремонт котлов ${brand.name} в ${regionPrep}`;
-const description = `Ремонт и диагностика котлов ${brand.name} в ${regionPrep}: ошибки, розжиг, плата, насос, датчики, теплообменник и дымоудаление.`;
+const yandexMapsUrl = "https://yandex.ru/maps/org/gazmaster/165084897107/?ll=39.535637%2C52.603696&z=16";
+const yandexServicesUrl =
+  "https://uslugi.yandex.ru/profile/Gazmaster-108825?occupationId=%2Fremont-i-ustanovka-tehniki&specId=%2Fremont-i-ustanovka-tehniki%2Fdrugoe&text=%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%B3%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85+%D0%BA%D0%BE%D1%82%D0%BB%D0%BE%D0%B2";
+const brandFullName = "alias" in brand && brand.alias ? `${brand.name} / ${brand.alias}` : brand.name;
+const title = `Ремонт газовых котлов ${brandFullName} в ${regionPrep}`;
+const description = `Ремонт и обслуживание газовых котлов ${brandFullName} в ${regionPrep}: выезд мастера, диагностика, ошибки, розжиг, плата, насос, датчики, теплообменник и дымоудаление.`;
 
 useHead({
   title: `${title} — выезд мастера`,
@@ -38,8 +42,18 @@ useHead({
         brand: { "@type": "Brand", name: brand.name },
         provider: {
           "@type": "LocalBusiness",
-          name: `Ремонт котлов ${brand.name} в ${regionPrep}`,
+          name: `Ремонт котлов ${brandFullName} в ${regionPrep}`,
           telephone: "+7 (933) 091-72-76",
+          hasMap: yandexMapsUrl,
+          sameAs: [yandexMapsUrl, yandexServicesUrl],
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.9",
+            reviewCount: "49",
+            ratingCount: "55",
+            bestRating: "5",
+            worstRating: "1",
+          },
           address: { "@type": "PostalAddress", addressLocality: regionName, addressCountry: "RU" },
         },
         offers: { "@type": "Offer", availability: "https://schema.org/InStock", priceCurrency: "RUB", url: canonical },
@@ -52,7 +66,7 @@ useHead({
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Ремонт котлов", item: `https://remontkotlov48.ru/${region}/remont/` },
-          { "@type": "ListItem", position: 2, name: brand.name, item: canonical },
+          { "@type": "ListItem", position: 2, name: brandFullName, item: canonical },
         ],
       }),
     },
@@ -65,7 +79,7 @@ useHead({
     <nav class="mx-auto max-w-7xl px-4 py-4 text-sm text-neutral-500 sm:px-6 lg:px-8">
       <NuxtLink :to="`/${region}/remont/`" class="hover:text-neutral-900">Ремонт котлов</NuxtLink>
       <span class="mx-2 text-neutral-300">/</span>
-      <span>{{ brand.name }}</span>
+      <span>{{ brandFullName }}</span>
     </nav>
 
     <section class="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_340px] lg:px-8">
@@ -97,9 +111,17 @@ useHead({
       </aside>
     </section>
 
+    <LocalTrustBlock
+      :region="regionName"
+      :region-route="region === 'lipeck' ? 'Липецку' : regionName"
+      :brand="brandFullName"
+      :service="`ремонту котлов ${brandFullName}`"
+      compact
+    />
+
     <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <div class="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm md:p-7">
-        <h2 class="text-2xl font-black tracking-tight">Ошибки котлов {{ brand.name }}</h2>
+        <h2 class="text-2xl font-black tracking-tight">Ошибки котлов {{ brandFullName }}</h2>
         <div class="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <NuxtLink
             v-for="code in codes"
@@ -115,7 +137,7 @@ useHead({
 
     <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-5 md:p-7">
-        <h2 class="text-2xl font-black tracking-tight">Услуги по ремонту</h2>
+        <h2 class="text-2xl font-black tracking-tight">Услуги по ремонту {{ brand.name }}</h2>
         <div class="mt-5 grid gap-3 md:grid-cols-3">
           <NuxtLink
             v-for="service in repairServicePages"
