@@ -1,0 +1,21 @@
+---
+import ProthermCategoryPage from "../../../components/ProthermCategoryPage.astro";
+
+const faq = [
+  { question: "Как подобрать вентилятор Navien?", answer: "Укажите модель котла, артикул старого вентилятора и серийный номер. Внешне похожие вентиляторы отличаются мощностью, разъёмом и креплением." },
+  { question: "Для каких котлов есть вентиляторы?", answer: "В каталоге представлены детали для Navien Ace, Ace Coaxial, Deluxe, Deluxe S, Deluxe C, Deluxe One, Deluxe Plus, Smart Tok и Prime." },
+  { question: "Можно заказать по артикулу?", answer: "Да. Укажите артикул и модель котла — уточним совместимость, наличие и срок поставки." },
+];
+---
+
+<ProthermCategoryPage
+  category="Вентиляторы"
+  brandSlug="navien"
+  brandName="Navien"
+  title="Вентиляторы для котлов Navien в Липецке"
+  description="Вентиляторы для газовых котлов Navien Ace, Deluxe, Smart Tok и Prime. Подбор по модели, артикулу и серийному номеру в Липецке."
+  intro="Каталог вентиляторов для газовых котлов Navien. Для точного подбора сверяем модель, мощность, артикул и серийный номер оборудования."
+  selectionTitle="Как подобрать вентилятор Navien"
+  selectionText="Укажите модель котла, артикул старого вентилятора или отправьте фото шильдика. Проверим совместимость до заказа."
+  faq={faq}
+/>

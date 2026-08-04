@@ -111,9 +111,10 @@ const viessmannWallMountedErrorCodes = [
   "serv",
 ];
 const vaillantWallMountedErrorCodes = [
-  "f20", "f22", "f23", "f24", "f27", "f28", "f29", "f60",
+  "f12", "f20", "f22", "f23", "f24", "f27", "f28", "f29", "f60",
   "f61", "f70", "f71", "f73", "f75", "f77", "f82", "fxx",
 ];
+const fonditalWallMountedErrorCodes = ["33"];
 const brandLandingRoutes = repairBrands.map((brand) => `/lipeck/remont/${brand.slug}/`);
 const serviceLandingRoutes = repairServicePages.map((service) => `/lipeck/uslugi/${service.slug}/`);
 
@@ -125,14 +126,20 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   nitro: {
     prerender: {
+      // Каталог публикуется отдельной статической сборкой Astro. Nuxt не должен
+      // пытаться пререндерить его внутренние URL при обходе сервисных страниц.
+      ignore: ["/zapchasti/"],
       routes: [
         "/",
+        "/zapchasti/",
+        "/otzyvy/",
         "/lipeck/remont/",
         ...brandLandingRoutes,
         ...serviceLandingRoutes,
         ...prothermWallMountedErrorCodes.map((code) => `/lipeck/remont/protherm/oshybka-${code}/`),
         ...baxiWallMountedErrorCodes.map((code) => `/lipeck/remont/baxi/oshybka-${code}/`),
         ...navienWallMountedErrorCodes.map((code) => `/lipeck/remont/navien/oshybka-${code}/`),
+        ...fonditalWallMountedErrorCodes.map((code) => `/lipeck/remont/fondital/oshybka-${code}/`),
         ...vaillantWallMountedErrorCodes.map((code) => `/lipeck/remont/vaillant/oshybka-${code}/`),
         ...viessmannWallMountedErrorCodes.map((code) => `/lipeck/remont/viessmann/oshybka-${code}/`),
       ],

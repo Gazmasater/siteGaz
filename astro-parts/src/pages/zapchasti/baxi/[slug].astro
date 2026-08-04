@@ -1,0 +1,138 @@
+---
+import type { GetStaticPaths } from "astro";
+import type { ImageMetadata } from "astro";
+import { Picture } from "astro:assets";
+import { sparePartsBrands, type SparePart } from "../../../../../app/data/spareParts";
+import { buildProductSeo, buildProductTitle, preferredProductSlug } from "../../../../../app/data/productSeo";
+
+const phone = "8 (962) 352-70-02";
+const phoneHref = "tel:+79623527002";
+const imageFilesBySlug = new Map<string, string>([
+  ["fime-vgr0042710-5653850", "baxi-fan-1.webp"], ["fime-vgr0013184-5682150", "baxi-fan-2.webp"], ["sohon-nuvola-5632530", "baxi-fan-3.webp"], ["eco-classic-eco-nova-63111300821p", "baxi-fan-4.webp"], ["fime-vgr0012650-710365100", "baxi-fan-5.webp"], ["fime-vgr0042711-5655730", "baxi-fan-6.webp"], ["eco-life-eco-star-7731816", "baxi-fan-7.webp"], ["baxi-5653850", "baxi-fan-8-clean.webp"], ["ebm-5682150", "baxi-fan-9.webp"], ["baxi-5655730", "baxi-fan-10.webp"], ["baxi-5691840", "baxi-fan-11-clean.webp"], ["nuvola-3-comfort-320-5695650", "baxi-fan-12.webp"], ["baxi-nuvola-5632530", "baxi-fan-13-clean.webp"], ["baxi-5663810", "baxi-fan-14-clean.webp"], ["baxi-768062100", "baxi-fan-15.webp"], ["luna-duo-tec-mp-710754100", "baxi-fan-16.webp"], ["luna-ht-power-ht-3621190", "baxi-fan-17.webp"], ["luna-ht-5681550", "baxi-fan-18-clean.webp"],
+]);
+const galleryImageFilesBySlug = new Map<string, string[]>([
+  ["baxi-heat-18", ["measure-baxi-heat-18.webp"]],
+  ["baxi-heat-19", ["measure-baxi-heat-19.webp"]],
+  ["baxi-heat-23", ["measure-baxi-heat-23.webp"]],
+  ["baxi-heat-26", ["measure-baxi-heat-26.webp"]],
+  ["baxi-heat-27", ["measure-baxi-heat-27.webp"]],
+  ["baxi-heat-28", ["measure-baxi-heat-28.webp"]],
+  ["baxi-heat-29", ["measure-baxi-heat-29.webp"]],
+  ["baxi-heat-30", ["measure-baxi-heat-30.webp"]],
+  ["baxi-heat-31", ["measure-baxi-heat-31.webp"]],
+  ["baxi-heat-33", ["measure-baxi-heat-33.webp"]],
+  ["baxi-heat-35", ["measure-baxi-heat-35.webp"]],
+  ["baxi-heat-36", ["measure-baxi-heat-36.webp"]],
+]);
+const ecoClassicNovaModels = ["ECO Classic 10 F", "ECO Classic 14 F", "ECO Classic 18 F", "ECO Classic 24 F", "ECO Nova 10 F", "ECO Nova 14 F", "ECO Nova 18 F", "ECO Nova 24 F"];
+const ecoFourLuna240Models = ["ECO Four 24", "ECO Four 24 F", "ECO-3 240 Fi", "ECO-3 240 i", "Luna-3 240 Fi", "Luna-3 240 i", "Luna-3 Comfort 240 Fi", "Luna-3 Comfort 240 i", "ECO LIFE 10 F", "ECO LIFE 14 F", "ECO LIFE 18 F", "ECO LIFE 24 F", "ECO STAR 10 F", "ECO STAR 14 F", "ECO STAR 18 F", "ECO STAR 24 F"];
+const eco280Luna310Models = ["Eco 280 Fi", "Eco 280 i", "Eco-3 280 Fi", "Luna 310 Fi", "Luna-3 280 Fi", "Luna-3 310 Fi", "Luna-3 Comfort 310 Fi"];
+const ecoCompactFourtechModels = ["Eco Compact 1.24", "Eco Compact 24", "Eco Four 1.14", "Eco Four 1.14 F", "Eco Four 1.24", "Eco Four 1.24 F", "Eco Four 24", "Eco Four 24 F", "Eco-3 Compact 1.140 Fi", "Eco-3 Compact 1.140 i", "Eco-3 Compact 1.240 Fi", "Eco-3 Compact 1.240 i", "Eco-3 Compact 240 Fi", "Eco-3 Compact 240 i", "Eco-4s 24", "Eco-5 Compact 24", "Eco-5 Compact+ 1.24", "Eco-5 Compact+ 24", "Fourtech 1.14", "Fourtech 1.24", "Fourtech 1.24 F", "Fourtech 24", "Fourtech 24 F", "De Dietrich MS 24", "De Dietrich MS 24 FF", "De Dietrich MS 24 MI", "De Dietrich MS 24 MI FF", "Westen Pulsar D 24"];
+const eco3Luna3Models = ["Eco-3 1.240 Fi", "Eco-3 240 Fi", "Eco-3 240 i", "Luna-3 240 Fi", "Luna-3 240 i", "Luna-3 Comfort 1.240 Fi", "Luna-3 Comfort 1.240 i", "Luna-3 Comfort 240 Fi", "Luna-3 Comfort 240 i"];
+const eco3Luna3_280Models = ["Eco-3 280 Fi", "Luna-3 1.310 Fi", "Luna-3 280 Fi", "Luna-3 310 Fi", "Luna-3 Comfort 310 Fi", "Luna-3 Comfort 1.310 Fi"];
+const compatibleModelsBySlug = new Map<string, string[]>([
+  ["fime-vgr0042710-5653850", ["ECO 1.240 Fi", "ECO 240 Fi", "ECO-3 1.240 Fi", "ECO-3 240 Fi", "LUNA 240 Fi", "LUNA-3 240 Fi", "LUNA-3 COMFORT 1.240 Fi", "LUNA-3 COMFORT 240 Fi", "SLIM 1.230 Fi", "SLIM 1.230 FiN", "SLIM 1.300 Fi", "SLIM 1.300 FiN", "SLIM 2.300 Fi"]],
+  ["fime-vgr0013184-5682150", ["Eco Four 1.24 F", "Eco Four 24 F", "Eco Home 10 F", "Eco Home 24 F", "Eco-3 Compact 1.240 Fi", "Eco-3 Compact 240 Fi", "Eco-4s 1.24 F", "Eco-4s 10 F", "Eco-4s 18 F", "Eco-4s 24 F", "Fourtech 1.24 F", "Fourtech 24 F", "Main 24 Fi", "Main Four 18 F", "Main Four 240 F", "De Dietrich MS 24 FF", "De Dietrich MS 24 MI FF", "Westen Pulsar 1.240 Fi", "Westen Pulsar D 1.24 F", "Westen Pulsar D 24 F", "Westen Quasar 24 F", "Westen Quasar D 24 F", "Westen Quasar Plus 24 Fi"]],
+  ["sohon-nuvola-5632530", ["MS 24 BIC FF", "Nuvola 140 Fi", "Nuvola 240 Fi", "Nuvola 280 Fi", "Nuvola-3 140 B40 Fi", "Nuvola-3 240 B40 Fi", "Nuvola-3 280 B40 Fi", "Nuvola-3 Comfort 240 Fi", "Nuvola-3 Comfort 280 Fi"]],
+  ["eco-classic-eco-nova-63111300821p", ["ECO Classic 10 F", "ECO Classic 14 F", "ECO Classic 18 F", "ECO Classic 24 F", "ECO Nova 10 F", "ECO Nova 14 F", "ECO Nova 18 F", "ECO Nova 24 F"]],
+  ["fime-vgr0012650-710365100", ["ECO Compact 1.14 F", "ECO Compact 1.24 F", "ECO Compact 14 F", "ECO Compact 18 F", "ECO Compact 24 F", "ECO-5 COMPACT 14 F", "ECO-5 COMPACT 18 F", "ECO-5 COMPACT 24 F", "MAIN-5 14 F", "MAIN-5 18 F", "MAIN-5 24 F", "PULSAR E 1.24 F", "PULSAR E 24 F", "QUASAR E 18 F", "QUASAR E 24 F"]],
+  ["fime-vgr0042711-5655730", ["Eco 280 Fi", "Eco-3 280 Fi", "Luna 1.310 Fi", "Luna 310 Fi", "Luna-3 1.310 Fi", "Luna-3 280 Fi", "Luna-3 310 Fi", "Luna-3 Comfort 1.310 Fi", "Luna-3 Comfort 310 Fi"]],
+  ["eco-life-eco-star-7731816", ["Eco Life 1.14 F", "Eco Life 1.24 F", "Eco Life 10 F", "Eco Life 14 F", "Eco Life 18 F", "Eco Life 24 F", "Eco Star 1.24 F", "Eco Star 10 F", "Eco Star 14 F", "Eco Star 18 F", "Eco Star 24 F"]],
+  ["baxi-5653850", ["ECO 1.240 Fi", "ECO 240 Fi", "ECO-3 1.240 Fi", "ECO-3 240 Fi", "LUNA 240 Fi", "LUNA-3 240 Fi", "LUNA-3 COMFORT 1.240 Fi", "LUNA-3 COMFORT 240 Fi", "SLIM 1.230 Fi", "SLIM 1.230 FiN", "SLIM 1.300 Fi", "SLIM 1.300 FiN", "SLIM 2.300 Fi"]],
+  ["ebm-5682150", ["Eco Four 1.24 F", "Eco Four 24 F", "Eco Home 10 F", "Eco Home 24 F", "Eco-3 Compact 1.240 Fi", "Eco-3 Compact 240 Fi", "Eco-4s 1.24 F", "Eco-4s 10 F", "Eco-4s 18 F", "Eco-4s 24 F", "Fourtech 1.24 F", "Fourtech 24 F", "Main 24 Fi", "Main Four 18 F", "Main Four 240 F", "De Dietrich MS 24 FF", "De Dietrich MS 24 MI FF", "Westen Pulsar 1.240 Fi", "Westen Pulsar D 1.24 F", "Westen Pulsar D 24 F", "Westen Quasar 24 F", "Westen Quasar D 24 F", "Westen Quasar Plus 24 Fi"]],
+  ["baxi-5655730", ["Eco 280 Fi", "Eco-3 280 Fi", "Luna 1.310 Fi", "Luna 310 Fi", "Luna-3 1.310 Fi", "Luna-3 280 Fi", "Luna-3 310 Fi", "Luna-3 Comfort 1.310 Fi", "Luna-3 Comfort 310 Fi"]],
+  ["baxi-5691840", ["Luna-3 Comfort HT 1.120", "Nuvola-3 Comfort HT 330", "Prime HT 1.120", "Prime HT 1.240", "Prime HT 240", "Prime HT 280", "Prime HT 330"]],
+  ["nuvola-3-comfort-320-5695650", ["Nuvola-3 Comfort 320 Fi"]],
+  ["baxi-nuvola-5632530", ["MS 24 BIC FF", "Nuvola 140 Fi", "Nuvola 240 Fi", "Nuvola 280 Fi", "Nuvola-3 140 B40 Fi", "Nuvola-3 240 B40 Fi", "Nuvola-3 280 B40 Fi", "Nuvola-3 Comfort 240 Fi", "Nuvola-3 Comfort 280 Fi"]],
+  ["baxi-5663810", ["Eco-3 Compact 1.240 Fi", "Eco-3 Compact 240 Fi", "Main 24 Fi"]],
+  ["baxi-768062100", ["DUO-TEC COMPACT 1.24", "DUO-TEC COMPACT 20", "DUO-TEC COMPACT 24", "DUO-TEC COMPACT 28", "LUNA AIR 24", "LUNA AIR 28", "LUNA DUO-TEC 1.12", "LUNA DUO-TEC 1.24", "LUNA DUO-TEC 1.28", "LUNA DUO-TEC 24", "LUNA DUO-TEC 28", "LUNA DUO-TEC 33", "LUNA DUO-TEC 40", "LUNA DUO-TEC E 1.12", "LUNA DUO-TEC E 1.24", "LUNA DUO-TEC E 1.28", "LUNA DUO-TEC E 24", "LUNA DUO-TEC E 28", "LUNA DUO-TEC E 33", "LUNA DUO-TEC E 40", "LUNA DUO-TEC IN + 1.24 GA", "LUNA DUO-TEC IN + 24 GA", "LUNA DUO-TEC IN + 28 GA", "LUNA DUO-TEC+ 1.12", "LUNA DUO-TEC+ 1.24", "LUNA DUO-TEC+ 1.28", "LUNA DUO-TEC+ 24", "LUNA DUO-TEC+ 28"]],
+  ["luna-duo-tec-mp-710754100", ["Luna Duo-Tec MP 1.35", "Luna Duo-Tec MP 1.50", "Luna Duo-Tec MP 1.60", "Luna Duo-Tec MP 1.70"]],
+  ["luna-ht-power-ht-3621190", ["Luna HT 1.850", "Power HT 1.850", "Power HT 1.1000"]],
+  ["luna-ht-5681550", ["Luna HT 1.990", "Luna HT 1.1000"]],
+  ["baxi-heat-1", ["Eco 240 Fi", "Eco 240 i", "Eco Compact 14 F", "Eco Compact 18 F", "Eco Compact 24", "Eco Compact 24 F", "Eco Four 24", "Eco Four 24 F", "Eco Home 10 F", "Eco Home 14 F", "Eco Home 24 F", "Eco-3 240 Fi", "Eco-3 240 i", "Eco-3 Compact 240 Fi", "Eco-3 Compact 240 i", "Eco-4s 10 F", "Eco-4s 18 F", "Eco-4s 24", "Eco-4s 24 F", "Eco-5 Compact 14 F", "Eco-5 Compact 18 F", "Eco-5 Compact 24", "Eco-5 Compact 24 F", "Fourtech 24", "Fourtech 24 F"]],
+  ["baxi-heat-2", ["Eco-3 280 Fi", "Luna-3 280 Fi", "Luna-3 310 Fi", "Luna-3 Comfort 310 Fi"]],
+  ["baxi-heat-3", ecoFourLuna240Models],
+  ["baxi-heat-4", ecoClassicNovaModels],
+  ["baxi-heat-5", ecoClassicNovaModels],
+  ["baxi-heat-6", eco280Luna310Models],
+  ["baxi-heat-7", ecoFourLuna240Models],
+  ["baxi-heat-8", ["Eco 240 Fi", "Eco 240 i", "Eco Compact 14 F", "Eco Compact 18 F", "Eco Compact 24", "Eco Compact 24 F", "Eco Four 24", "Eco Four 24 F", "Eco Home 10 F", "Eco Home 14 F", "Eco Home 24 F", "Eco-3 240 Fi", "Eco-3 240 i", "Eco-3 Compact 240 Fi", "Eco-3 Compact 240 i", "Eco-4s 10 F", "Eco-4s 18 F", "Eco-4s 24", "Eco-4s 24 F", "Eco-5 Compact 14 F", "Eco-5 Compact 18 F", "Eco-5 Compact 24", "Eco-5 Compact 24 F", "Fourtech 24", "Fourtech 24 F", "Luna 240 Fi", "Luna-3 240 Fi", "Luna-3 240 i", "Luna-3 Comfort 240 Fi", "Luna-3 Comfort 240 i"]],
+  ["baxi-heat-9", ecoClassicNovaModels],
+  ["baxi-heat-10", ecoClassicNovaModels],
+  ["baxi-heat-11", [...ecoClassicNovaModels, "ECO Nova 31 F"]],
+  ["baxi-heat-12", ecoClassicNovaModels],
+  ["baxi-heat-13", ecoClassicNovaModels],
+  ["baxi-heat-15", ["Eco-3 280 Fi", "Luna-3 280 Fi", "Luna-3 310 Fi", "Luna-3 Comfort 310 Fi"]],
+  ["baxi-heat-17", eco280Luna310Models],
+  ["baxi-heat-18", ecoClassicNovaModels],
+  ["baxi-heat-19", ["Eco Compact 1.14 F", "Eco Compact 1.24 F", "Eco Compact 14 F", "Eco Compact 18 F", "Eco Compact 24 F", "Eco-5 Compact 14 F", "Eco-5 Compact 18 F", "Eco-5 Compact 24 F", "Pulsar E 1.24 F", "Pulsar E 24 F"]],
+  ["baxi-heat-20", ["Main-5 14 F", "Main-5 18 F", "Main-5 24 F", "Quasar E 18 F", "Quasar E 24 F"]],
+  ["baxi-heat-21", ecoCompactFourtechModels],
+  ["baxi-heat-22", [...eco3Luna3Models, ...eco3Luna3_280Models]],
+  ["baxi-heat-23", ecoClassicNovaModels],
+  ["baxi-heat-24", ["Eco Home 10 F", "Eco Home 14 F", "Eco Home 24 F", "Eco-4s 1.24 F", "Eco-4s 10 F", "Eco-4s 18 F", "Eco-4s 24 F", "Pulsar D 1.14 F", "Pulsar D 1.24 F", "Pulsar D 24 F"]],
+  ["baxi-heat-25", ["Main 24 Fi", "Main 24 i", "Main Digit 240 Fi", "Main Four 24", "Main Four 240 F", "Westen Quasar 24", "Westen Quasar 24 F", "Westen Quasar D 24", "Westen Quasar Plus 24 Fi", "Westen Quasar Plus 24 i"]],
+  ["baxi-heat-26", eco3Luna3_280Models],
+  ["baxi-heat-27", ecoCompactFourtechModels],
+  ["baxi-heat-28", eco3Luna3_280Models],
+  ["baxi-heat-29", eco3Luna3Models],
+  ["baxi-heat-30", ["Nuvola-3 Comfort 320 Fi"]],
+  ["baxi-heat-31", ["Main Four 18 F", "Westen Quasar D 24 F"]],
+  ["baxi-heat-32", ["Eco 1.240 Fi", "Eco 1.240 i", "Eco 240 Fi", "Eco 240 i", "Luna 1.240 Fi", "Luna 240 Fi", "Luna 240 i"]],
+  ["baxi-heat-33", ["ECO 280 Fi", "LUNA 1.310 Fi", "LUNA 310 Fi", "LUNA MAX 310 Fi"]],
+  ["baxi-heat-34", ["Eco 280 i"]],
+  ["baxi-heat-35", ["NUVOLA 240 FI", "NUVOLA 240 I", "NUVOLA 280 FI", "NUVOLA 280 I", "NUVOLA-3 140 B40 Fi", "NUVOLA-3 240 B40 Fi", "NUVOLA-3 280 B40 i", "NUVOLA-3 COMFORT 140 Fi", "NUVOLA-3 COMFORT 240 Fi", "NUVOLA-3 COMFORT 240 i", "NUVOLA-3 COMFORT 280 Fi", "NUVOLA-3 COMFORT 280 i"]],
+  ["baxi-heat-36", ["LUNA DUO-TEC 40", "LUNA DUO-TEC E 40", "LUNA DUO-TEC+ 40", "LUNA PLATINUM+ 1.32", "PRIME HT 330"]],
+  ["baxi-heat-37", ["LUNA DUO-TEC MP 1.35", "LUNA DUO-TEC MP 1.50", "POWER HT+ 1.50"]],
+]);
+const images = import.meta.glob<{ default: ImageMetadata }>("../../../assets/spare-parts/optimized/*.{webp,png}", { eager: true });
+const imageByFile = new Map(Object.entries(images).map(([path, image]) => [path.split("/").at(-1)!, image.default]));
+
+export const getStaticPaths = (() => {
+  const baxi = sparePartsBrands.find((item) => item.slug === "baxi")!;
+  return baxi.parts.filter((part) => part.slug).map((part) => ({ params: { slug: part.slug! }, props: { part } }));
+}) satisfies GetStaticPaths;
+
+const { part } = Astro.props as { part: SparePart };
+const requestPayload = `request-baxi-${sparePartsBrands.find((item) => item.slug === "baxi")!.parts.indexOf(part).toString(36)}`;
+const telegramRequestUrl = `/zapchasti/request/?start=${requestPayload}`;
+const canonicalSlug = preferredProductSlug("Baxi", part.slug);
+const isDuplicate = canonicalSlug !== part.slug;
+const canonical = `https://remontkotlov48.ru/zapchasti/baxi/${canonicalSlug}/`;
+const imageFile = imageFilesBySlug.get(part.slug ?? "") ?? (part.slug?.startsWith("baxi-heat-") ? `${part.slug}.webp` : undefined);
+const productImage = imageByFile.get(imageFile ?? "");
+if (!productImage) throw new Error(`Не найдено изображение товара ${part.slug}`);
+const ogImage = new URL(productImage.src, "https://remontkotlov48.ru").href;
+const galleryImages = [imageFile, ...(galleryImageFilesBySlug.get(part.slug ?? "") ?? [])]
+  .map((file) => ({ file, image: file ? imageByFile.get(file) : undefined }))
+  .filter((item): item is { file: string; image: ImageMetadata } => Boolean(item.image));
+const compatibleModels = compatibleModelsBySlug.get(part.slug ?? "") ?? [];
+const seo = buildProductSeo(part, "Baxi", compatibleModels);
+const title = buildProductTitle(part);
+const compatibilitySeoText = compatibleModels.length ? ` Подходит для моделей: ${compatibleModels.slice(0, 3).join(", ")}.` : "";
+const categorySlug = part.category === "Теплообменники" ? "teploobmenniki" : "ventilyatory";
+const categoryUrl = `/zapchasti/baxi/${categorySlug}/`;
+const structuredData = { "@context": "https://schema.org", "@graph": [
+  { "@type": "Product", name: part.name, description: seo.lead, sku: part.article, category: part.category, brand: { "@type": "Brand", name: "Baxi" }, url: canonical, additionalProperty: compatibleModels.map((model) => ({ "@type": "PropertyValue", name: "Совместимая модель котла", value: model })) },
+  { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Главная", item: "https://remontkotlov48.ru/" }, { "@type": "ListItem", position: 2, name: "Запчасти", item: "https://remontkotlov48.ru/zapchasti/" }, { "@type": "ListItem", position: 3, name: `Baxi · ${part.category}`, item: `https://remontkotlov48.ru${categoryUrl}` }, { "@type": "ListItem", position: 4, name: part.name, item: canonical }] },
+] };
+---
+
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="description" content={seo.metaDescription} /><meta name="robots" content={isDuplicate ? "noindex, follow" : "index, follow, max-image-preview:large"} /><meta property="og:type" content="product" /><meta property="og:locale" content="ru_RU" /><meta property="og:title" content={title} /><meta property="og:description" content={`${part.name} для котлов Baxi. Артикул ${part.article}.${compatibilitySeoText}`} /><meta property="og:url" content={canonical} /><meta property="og:image" content={ogImage} /><meta property="og:image:alt" content={part.name} /><link rel="canonical" href={canonical} /><link rel="alternate" href={canonical} hreflang="ru-RU" /><script type="application/ld+json" set:html={JSON.stringify(structuredData)} /><title>{title}</title></head>
+<body><header><div class="header-inner"><a class="brand" href="/" aria-label="Gazmaster — главная"><b class="brand-logo"><img src="/img/gazmaster-watermark.webp" alt="" /></b><span><strong>Gazmaster</strong><small>Ремонт котлов · Липецк</small></span></a><nav><a href="/lipeck/uslugi/remont-gazovyh-kotlov/">Ремонт котлов</a><a href="/zapchasti/">Запчасти</a></nav><a class="phone" href={phoneHref}>{phone}</a></div></header><main class="container"><nav class="breadcrumbs"><a href="/">Главная</a><span>/</span><a href="/zapchasti/">Запчасти</a><span>/</span><a href={categoryUrl}>Baxi · {part.category}</a><span>/</span><b>{part.name}</b></nav><article class="product"><div class="product-gallery" data-product-gallery><div class="product-image">{galleryImages.map((item, index) => <div class:list={["gallery-frame", { active: index === 0 }]} data-gallery-frame={index} hidden={index !== 0}><Picture src={item.image} alt={`${part.name}${index ? item.file.startsWith("measure-") ? " — размеры по линейке" : ` — ракурс ${index + 1}` : ""}`} formats={["avif", "webp"]} fallbackFormat="webp" widths={[520, 880, 1200]} sizes="(max-width: 760px) calc(100vw - 32px), 560px" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} /></div>)}</div>{galleryImages.length > 1 && <div class="gallery-thumbs" aria-label="Другие ракурсы товара">{galleryImages.map((item, index) => <button class:list={[{ active: index === 0 }, { measurement: item.file.startsWith("measure-") }]} type="button" data-gallery-thumb={index} aria-label={item.file.startsWith("measure-") ? "Показать размеры по линейке" : `Показать ракурс ${index + 1}`} aria-pressed={index === 0}><Picture src={item.image} alt={`${part.name}${item.file.startsWith("measure-") ? " — размеры по линейке" : index ? ` — ракурс ${index + 1}` : ""}`} formats={["webp"]} fallbackFormat="webp" widths={[100, 160]} sizes="76px" loading="lazy" />{item.file.startsWith("measure-") && <span>Размеры</span>}</button>)}</div>}</div><div class="product-details"><p class="eyebrow">Запчасти Baxi · {part.category}</p><h1>{part.name}</h1><p class="article">Артикул: <b>{part.article}</b></p><p class="lead">{seo.lead}</p><div class="availability"><b>Наличие и цена</b><span>Срок поставки — до 7 дней после подтверждения артикула.</span><span>Гарантия — 12 месяцев при правильной эксплуатации котла.</span></div><a class="buy" href={phoneHref}>Уточнить цену и наличие</a><p class="note">Для точного подбора сообщите модель котла и серийный номер оборудования.</p></div></article><section class="details"><h2>Совместимые модели котлов</h2>{compatibleModels.length ? <ul>{compatibleModels.map((model) => <li>{model}</li>)}</ul> : <p>Совместимость уточняем по модели и серийному номеру котла.</p>}<p>Перед заказом обязательно сверяем совместимость детали с конкретной моделью и комплектацией котла.</p><h2>Особенности подбора</h2><p>{seo.details}</p><h2>Как заказать</h2><p>Позвоните нам или оставьте заявку: назовите артикул <b>{part.article}</b> либо отправьте фото шильдика. Подтвердим цену и наличие; срок поставки — до 7 дней.</p></section><p class="back"><a href={categoryUrl}>← Все {part.category.toLowerCase()} Baxi</a></p></main><footer><div><strong>Gazmaster</strong><span>Ремонт, диагностика и обслуживание газовых котлов в Липецке и области.</span></div><a href={phoneHref}>{phone}</a></footer><script>document.querySelectorAll<HTMLElement>("[data-product-gallery]").forEach((gallery) => { const frames = gallery.querySelectorAll<HTMLElement>("[data-gallery-frame]"); const thumbs = gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumb]"); thumbs.forEach((thumb) => thumb.addEventListener("click", () => { const selected = thumb.dataset.galleryThumb; frames.forEach((frame) => { frame.hidden = frame.dataset.galleryFrame !== selected; frame.classList.toggle("active", frame.dataset.galleryFrame === selected); }); thumbs.forEach((item) => { const active = item === thumb; item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active)); }); })); });</script></body></html>
+
+<script define:vars={{ requestLink: telegramRequestUrl }}>
+  const orderButton = document.querySelector<HTMLAnchorElement>("a.buy");
+  if (orderButton) {
+    orderButton.href = requestLink;
+    orderButton.textContent = "Выбрать мессенджер";
+  }
+</script>
+
+<style>
+  :root{color:#172033;font-family:Arial,sans-serif;background:#f5f7fb}*{box-sizing:border-box}body{margin:0}header{border-bottom:1px solid #e4e8ee;background:#fff}.header-inner,.container{width:min(1180px,calc(100% - 40px));margin:0 auto}.header-inner{display:flex;align-items:center;min-height:76px;gap:25px}.brand{display:flex;align-items:center;gap:10px;color:#172033;text-decoration:none}.brand>b{display:grid;place-items:center;width:37px;height:37px;border-radius:12px;color:#172033;background:#f2c94c;font-size:20px}.brand strong,.brand small{display:block}.brand strong{font-size:16px}.brand small{margin-top:3px;color:#7c8796;font-size:10px}header nav{display:flex;gap:19px;margin-left:auto}header nav a{color:#5b687a;font-size:13px;font-weight:700;text-decoration:none}.phone{color:#1b2737;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap}.container{padding:36px 0 78px}.breadcrumbs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;color:#8390a4;font-size:13px}.breadcrumbs a{color:#526780;text-decoration:none}.breadcrumbs b{color:#38465c}.product{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.88fr);gap:54px;align-items:start;padding:26px;border:1px solid #e2e7ee;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(30,41,59,.05)}.product-image{overflow:hidden;border-radius:14px;background:#fff;aspect-ratio:4/3}.gallery-frame{width:100%;height:100%}.product-image :global(picture),.product-image :global(img){display:block;width:100%;height:100%}.product-image :global(img){object-fit:cover}.gallery-thumbs{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}.gallery-thumbs button{position:relative;width:76px;height:58px;overflow:hidden;padding:0;border:2px solid transparent;border-radius:9px;background:#fff;cursor:pointer}.gallery-thumbs button.active{border-color:#d69a2d}.gallery-thumbs button.measurement{border-color:#8ca668}.gallery-thumbs button.measurement.active{border-color:#d69a2d}.gallery-thumbs button.measurement span{position:absolute;right:2px;bottom:2px;padding:2px 4px;border-radius:4px;color:#fff;background:rgba(43,68,33,.9);font-size:8px;font-weight:800;line-height:1}.gallery-thumbs :global(picture),.gallery-thumbs :global(img){display:block;width:100%;height:100%}.gallery-thumbs :global(img){object-fit:cover}.eyebrow{margin:3px 0 11px;color:#b77710;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.product-details h1{margin:0 0 15px;color:#172033;font-size:clamp(32px,4vw,49px);letter-spacing:-.05em;line-height:1.07}.article{margin:0 0 18px;color:#66768a;font-size:14px}.article b{color:#26364a}.lead{margin:0 0 22px;color:#53647a;font-size:16px;line-height:1.64}.availability{display:flex;flex-direction:column;gap:5px;margin-bottom:15px;padding:14px 16px;border-radius:12px;background:#fff7e2;color:#7e5a19}.availability b,.availability span{font-size:13px}.buy{display:block;padding:15px 18px;border-radius:10px;color:#fff;background:#1d2b3b;font-size:14px;font-weight:800;text-align:center;text-decoration:none}.note{margin:13px 0 0;color:#78879a;font-size:12px;line-height:1.5}.details{max-width:760px;margin:38px 0 0}.details h2{margin:25px 0 9px;color:#1d2c3f;font-size:24px;letter-spacing:-.035em}.details p{margin:0;color:#5e6d80;font-size:15px;line-height:1.7}.details ul{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}.details li{padding:8px 10px;border:1px solid #e4cf9d;border-radius:8px;color:#705219;background:#fff8e8;font-size:13px;font-weight:700}.details ul+p{margin-top:12px}.back{margin-top:31px}.back a{color:#946011;font-size:14px;font-weight:700;text-decoration:none}footer{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:35px max(20px,calc((100% - 1180px)/2));color:#d6dce4;background:#111827}footer strong,footer span{display:block}footer strong{margin-bottom:5px;color:#fff;font-size:18px}footer span{font-size:12px}footer>a{color:#f6ca58;font-size:17px;font-weight:800;text-decoration:none}@media(max-width:760px){.header-inner,.container{width:min(100% - 32px,1180px)}.header-inner{min-height:68px}header nav{display:none}.phone{margin-left:auto}.product{grid-template-columns:1fr;gap:25px;padding:15px}.container{padding:26px 0 56px}.breadcrumbs{margin-bottom:22px}.product-details h1{font-size:34px}.details{margin-top:30px}footer{align-items:flex-start;flex-direction:column}}
+  /* Единый ненавязчивый знак владельца на основном фото и миниатюрах. */
+  .product-image { position:relative; isolation:isolate; }.product-image::after,.gallery-thumbs button::after { position:absolute; z-index:1; inset:0; pointer-events:none; background:url('/img/gazmaster-watermark.webp') 10px 10px / 30% auto no-repeat; content:""; opacity:.12; }.gallery-thumbs button::after { background-position:3px 3px; background-size:65% auto; opacity:.16; }.gallery-thumbs button.measurement span { z-index:2; }
+  .brand>b.brand-logo { width:52px; height:42px; border-radius:0; background:transparent; overflow:hidden; }.brand-logo img { display:block; width:100%; height:100%; object-fit:contain; }
+</style>

@@ -1,0 +1,126 @@
+---
+import type { ImageMetadata } from "astro";
+import { sparePartsBrands } from "../../../app/data/spareParts";
+
+interface Props {
+  category: "Вентиляторы" | "Теплообменники";
+  brandSlug?: "protherm" | "vaillant" | "baxi" | "viessmann" | "ariston" | "ferroli" | "fondital";
+  brandName?: string;
+  title: string;
+  description: string;
+  intro: string;
+  selectionTitle: string;
+  selectionText: string;
+  faq: Array<{ question: string; answer: string }>;
+}
+
+const { category, brandSlug = "protherm", brandName = "Protherm", title, description, intro, selectionTitle, selectionText, faq } = Astro.props;
+const phone = "8 (962) 352-70-02";
+const phoneHref = "tel:+79623527002";
+const slug = category === "Вентиляторы" ? "ventilyatory" : "teploobmenniki";
+const canonical = `https://remontkotlov48.ru/zapchasti/${brandSlug}/${slug}/`;
+const brand = sparePartsBrands.find((item) => item.slug === brandSlug);
+if (!brand) throw new Error(`Не найден каталог ${brandName}`);
+const parts = brand.parts.filter((part) => part.category === category && part.slug);
+const isDhwHeatExchanger = (name: string) => /\bгвс\b|вторичн/i.test(name);
+const primaryHeatParts = parts.filter((part) => !isDhwHeatExchanger(part.name));
+const dhwHeatParts = parts.filter((part) => isDhwHeatExchanger(part.name));
+const assets = import.meta.glob<{ default: ImageMetadata }>("../assets/spare-parts/optimized/*.{webp,png}", { eager: true });
+const imageByFile = new Map(Object.entries(assets).map(([path, image]) => [path.split("/").at(-1)!, image.default]));
+const imageFilesBySlug = new Map<string, string>([
+  ["fime-gr04035-0020118666", "fan-01.webp"], ["kexinte-gepard-pantera-h-ru", "fan-02.webp"], ["sohon-gepard-pantera-h-ru", "fan-03.webp"], ["gepard-23-mtv-0020098002", "fan-04.webp"], ["fime-pantera-18-19", "fan-05.webp"], ["fime-vgr01855-gepard-pantera", "fan-06.webp"], ["fime-leopard-pantera-tigr-rys", "fan-07.webp"], ["pantera-12-kto-0020034890", "fan-08.webp"], ["rlh120-pt50-0020034951", "fan-09.webp"], ["pantera-35-ktv-h-ru-0020200682", "fan-10.webp"],
+  ["bitermicheskiy-heatwave-rys-leopard-0020025297", "heat-01.webp"], ["vtorichnyy-12-plastin-pantera-15-17-0020043598", "heat-02.webp"], ["gvs-itm-16-lev-pantera-0020014402", "heat-03.webp"], ["gvs-swep-16-lev-pantera-0020014402", "heat-04.webp"], ["gvs-zilmet-12-lynx-0020119605", "heat-05.webp"], ["pervichnyy-gepard-mov-pantera-0020142418", "heat-06.webp"], ["pervichnyy-heatwave-pantera-30-kov-0020200592", "heat-07.webp"], ["pervichnyy-heatwave-gepard-0020142414", "heat-08.webp"], ["pervichnyy-heatwave-gepard-pantera-0020142418", "heat-09.webp"], ["pervichnyy-lynx-yaguar-0020120231", "heat-10.webp"], ["pervichnyy-gepard-pantera-25-0020142420", "heat-11.webp"], ["pervichnyy-pantera-30-kov-2015-0020200592", "heat-12.webp"], ["pervichnyy-pantera-30-ktv-0020048243", "heat-13.webp"], ["pervichnyy-pantera-30-ktv-2015-0020200595", "heat-14.webp"], ["pervichnyy-pantera-tigr-0020025264", "heat-15-clean.webp"], ["vtorichnyy-12-plastin-gepard-pantera-0020059452", "heat-16.webp"], ["vtorichnyy-12-plastin-pantera-v15-0020043598", "heat-17.webp"], ["vtorichnyy-zilmet-12-pantera-0020043598", "heat-18.webp"], ["vtorichnyy-lynx-yaguar-0020119605", "heat-19.webp"], ["vtorichnyy-pantera-25-0020186152", "heat-20.webp"], ["vtorichnyy-pantera-30-35-0020186153", "heat-21.webp"], ["vtorichnyy-pantera-30-ktv-0020097179", "heat-22.webp"], ["vtorichnyy-swep-pantera-0020043598", "heat-23.webp"],
+  ["kexinte-turbotec-turbomax-0020020008", "vaillant-fan-01.webp"], ["sohon-turbotec-turbomax-0020020008", "vaillant-fan-02.webp"], ["fime-vgr01855-turbotec-turbomax-0020020008", "vaillant-fan-03.webp"], ["sohon-turbotec-plus-32-0020051400", "vaillant-fan-04.webp"], ["fime-vgr0106426-turbofit-242-5-2-0020253005", "vaillant-fan-05.webp"], ["ventilyator-vaillant-193593", "vaillant-fan-06.webp"], ["ventilyator-vaillant-0020135138", "vaillant-fan-07.webp"], ["ventilyator-turbotec-plus-36-0020200682", "vaillant-fan-08.webp"],
+  ["fime-vgr0020991-7858293", "viessmann-fan-01.webp"], ["fime-vgr0107339-7858291", "viessmann-fan-02.webp"], ["fime-60w-7822865", "viessmann-fan-03.webp"], ["ventilyator-65w-7829827", "viessmann-fan-04.webp"],
+  ["fan-32w-65115813", "ariston-fan-01.webp"], ["clas-28ff-65104452", "ariston-fan-02.webp"], ["fime-65104357", "ariston-fan-03.webp"], ["fime-gr01445-995897", "ariston-fan-04.webp"],
+  ["ace-30-35-30005562c", "navien-fan-01.webp"], ["ace-40-30007950a", "navien-fan-02.webp"], ["deluxe-s-c-one-13-24-30021105a", "navien-fan-03.webp"], ["deluxe-s-c-one-35-40-30021106a", "navien-fan-04.webp"], ["deluxe-13-24-30012680a", "navien-fan-05.webp"], ["deluxe-30-40-30010860b", "navien-fan-06.webp"], ["ace-13-24-30005567a", "navien-fan-07.webp"],
+  ["gvs-12-30004997", "navien-heat-01.webp"], ["gvs-condevo-30017721", "navien-heat-02.webp"], ["gvs-40-30005013", "navien-heat-03.webp"], ["gvs-30-30005005", "navien-heat-04.webp"], ["gvs-deluxe-c-30-35-30013798", "navien-heat-05.webp"], ["gvs-deluxe-s-35-30018296", "navien-heat-06.webp"], ["gvs-deluxe-s-coaxial-30017721", "navien-heat-07.webp"], ["gvs-ncb700-35-30018297", "navien-heat-08.webp"], ["gvs-ace-13-24-30004995", "navien-heat-09.webp"], ["gvs-ace-24-30004997", "navien-heat-10.webp"], ["gvs-35-30005008", "navien-heat-11.webp"], ["gvs-deluxe-13-20-30004993", "navien-heat-12-clean.webp"], ["main-atmo-13-16-30004896", "navien-heat-13.webp"], ["main-13-24-30012859", "navien-heat-14.webp"], ["main-atmo-20-24-30004894", "navien-heat-15.webp"], ["main-30-30012860", "navien-heat-16.webp"], ["main-35-40-30012723", "navien-heat-17-clean.webp"],
+  ["bitermicheskiy-egis-65105094", "ariston-heat-01.webp"], ["bitermicheskiy-heatwave-egis-65106300", "ariston-heat-02.webp"], ["bitermicheskiy-heatwave-t2-tx-998619", "ariston-heat-03.webp"], ["bitermicheskiy-valmex-egis-65106300", "ariston-heat-04.webp"], ["gvs-12-uno-995945", "ariston-heat-05.webp"], ["main-65115065", "ariston-heat-06.webp"], ["main-65104246", "ariston-heat-07.webp"], ["main-65111932", "ariston-heat-08.webp"], ["main-65105041", "ariston-heat-09.webp"], ["main-65104247", "ariston-heat-10.webp"], ["main-heatwave-65104246", "ariston-heat-11.webp"], ["main-heatwave-65104247", "ariston-heat-12.webp"], ["main-heatwave-65106297", "ariston-heat-13.webp"], ["main-tubes-65113396", "ariston-heat-14.webp"], ["main-tubes-65119090", "ariston-heat-15.webp"], ["main-tubes-65119091", "ariston-heat-16.webp"], ["gvs-12-65104333", "ariston-heat-17.webp"], ["gvs-12-zilmet-65104333", "ariston-heat-18.webp"], ["gvs-16-65104333", "ariston-heat-19.webp"], ["gvs-12-condevo-65104333", "ariston-heat-20.webp"], ["gvs-16-zilmet-65104333", "ariston-heat-21.webp"], ["gvs-zilmet-uno-995945", "ariston-heat-22.webp"],
+  ["heat-12-a1jb-wh1b-7856846", "viessmann-heat-01.webp"], ["heat-12-wh1d-wb1b-7828745", "viessmann-heat-02.webp"], ["heat-12-swep-a1jb-7856846", "viessmann-heat-03.webp"], ["heat-12-zilmet-a1jb-7856846", "viessmann-heat-04.webp"], ["heat-14-a1jb-wh1b-7856964", "viessmann-heat-05.webp"], ["heat-14-wh1d-7829304", "viessmann-heat-06.webp"], ["heat-14-swep-wh1d-7829304", "viessmann-heat-07.webp"], ["heat-14-zilmet-a1jb-7856964", "viessmann-heat-08.webp"], ["heat-14-zilmet-wh1d-7829304", "viessmann-heat-09.webp"], ["heat-16-7856973", "viessmann-heat-10.webp"], ["heat-16-zilmet-7856973", "viessmann-heat-11.webp"], ["heat-wh0a-7822799a", "viessmann-heat-12.webp"], ["gvs-12-a1jb-wh1b-7856846", "viessmann-heat-13.webp"], ["gvs-12-zilmet-wh1d-7828745", "viessmann-heat-14.webp"], ["gvs-12-swep-wh1d-7828745", "viessmann-heat-15.webp"], ["heatwave-82-7825510a", "viessmann-heat-16.webp"], ["heatwave-98-7825511a", "viessmann-heat-17.webp"], ["main-heatwave-7861213", "viessmann-heat-18.webp"], ["main-valmex-7861213", "viessmann-heat-19.webp"], ["valmex-82-7825510av", "viessmann-heat-20.webp"], ["valmex-98-7825511av", "viessmann-heat-21.webp"],
+  ["fime-vgr0042710-5653850", "baxi-fan-1.webp"], ["fime-vgr0013184-5682150", "baxi-fan-2.webp"], ["sohon-nuvola-5632530", "baxi-fan-3.webp"], ["eco-classic-eco-nova-63111300821p", "baxi-fan-4.webp"], ["fime-vgr0012650-710365100", "baxi-fan-5.webp"], ["fime-vgr0042711-5655730", "baxi-fan-6.webp"], ["eco-life-eco-star-7731816", "baxi-fan-7.webp"], ["baxi-5653850", "baxi-fan-8-clean.webp"], ["ebm-5682150", "baxi-fan-9.webp"], ["baxi-5655730", "baxi-fan-10.webp"], ["baxi-5691840", "baxi-fan-11-clean.webp"], ["nuvola-3-comfort-320-5695650", "baxi-fan-12.webp"], ["baxi-nuvola-5632530", "baxi-fan-13-clean.webp"], ["baxi-5663810", "baxi-fan-14-clean.webp"], ["baxi-768062100", "baxi-fan-15.webp"], ["luna-duo-tec-mp-710754100", "baxi-fan-16.webp"], ["luna-ht-power-ht-3621190", "baxi-fan-17.webp"], ["luna-ht-5681550", "baxi-fan-18-clean.webp"],
+  ["gvs-12-0020020018", "vaillant-heat-01.webp"], ["gvs-12-turbofit-0020123543", "vaillant-heat-02.webp"], ["gvs-itm-16-0020038571", "vaillant-heat-03.webp"], ["gvs-12-atmo-turbomax-065131", "vaillant-heat-04.webp"], ["gvs-zilmet-12-turbofit-0020123543", "vaillant-heat-05.webp"], ["gvs-19-atmo-turbotec-plus-0020038572", "vaillant-heat-06.webp"], ["gvs-20-atmo-turbomax-065153", "vaillant-heat-07.webp"], ["gvs-swep-16-0020038571", "vaillant-heat-08.webp"], ["gvs-35-turbotec-plus-0020025041", "vaillant-heat-09.webp"], ["osnovnoy-turbofit-0020253011", "vaillant-heat-10-main.webp"], ["heatwave-92-atmotec-turbotec-0020019994", "vaillant-heat-11.webp"], ["heatwave-101-atmo-turbotec-0020039068", "vaillant-heat-12.webp"], ["heatwave-105-turbotec-turbomax-065152", "vaillant-heat-13.webp"], ["89-lamelej-atmomax-064713", "vaillant-heat-14-main.webp"], ["112-lamelej-atmo-turbotec-0020039069", "vaillant-heat-15-clean.webp"], ["95-lamelej-atmomax-064722", "vaillant-heat-16-main.webp"], ["98-lamelej-turbotec-0020039067", "vaillant-heat-17-main.webp"], ["102-lameli-turbomax-064714", "vaillant-heat-18-main.webp"], ["92-lameli-atmo-turbotec-0020019994", "vaillant-heat-19-main.webp"], ["101-lamel-atmo-turbotec-0020039068", "vaillant-heat-20-main.webp"], ["105-lamelej-turbotec-turbomax-065152", "vaillant-heat-21.webp"],
+]);
+const imageFileFor = (partSlug?: string) => imageFilesBySlug.get(partSlug ?? "") ?? (partSlug?.startsWith("baxi-heat-") ? `${partSlug}.webp` : undefined);
+const imageFor = (partSlug?: string) => {
+  const image = imageByFile.get(imageFileFor(partSlug) ?? "");
+  if (!image) throw new Error(`Не найдено изображение для ${partSlug}`);
+  return image;
+};
+const imageSrcFor = (part: (typeof parts)[number]) => {
+  if (brandSlug === "ferroli" || brandSlug === "fondital") return part.image;
+  const file = imageFileFor(part.slug);
+  if (!file) throw new Error(`Не найдено изображение для ${part.slug}`);
+  return file.startsWith("vaillant-") || file.startsWith("viessmann-") || file.startsWith("ariston-") || file.startsWith("navien-") ? `/img/spare-parts/${file}` : imageFor(part.slug).src;
+};
+const ogImage = "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "CollectionPage", name: title, description, url: canonical, inLanguage: "ru-RU" },
+    { "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: "https://remontkotlov48.ru/" },
+      { "@type": "ListItem", position: 2, name: "Запчасти", item: "https://remontkotlov48.ru/zapchasti/" },
+      { "@type": "ListItem", position: 3, name: `${brandName} — ${category}`, item: canonical },
+    ] },
+    { "@type": "ItemList", name: title, numberOfItems: parts.length, itemListElement: parts.map((part, index) => ({ "@type": "ListItem", position: index + 1, name: part.name, url: `https://remontkotlov48.ru/zapchasti/${brandSlug}/${part.slug}/` })) },
+    { "@type": "FAQPage", mainEntity: faq.map((item) => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content={`${title} | Gazmaster`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1600" />
+    <meta property="og:image:height" content="604" />
+    <meta property="og:image:alt" content={`${title} — Gazmaster`} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" href={canonical} hreflang="ru-RU" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <title>{title} | Gazmaster</title>
+  </head>
+  <body>
+    <header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Gazmaster — главная"><b class="brand-logo"><img src="/img/gazmaster-watermark.webp" alt="" /></b><span><strong>Gazmaster</strong><small>Ремонт котлов · Липецк</small></span></a><nav aria-label="Основная навигация"><a href="/lipeck/uslugi/remont-gazovyh-kotlov/">Ремонт котлов</a><a class="active" href="/zapchasti/">Запчасти</a></nav><a class="call-button" href={phoneHref}>Вызвать мастера</a></div></header>
+    <main class="container">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="/">Главная</a><span>/</span><a href="/zapchasti/">Запчасти</a><span>/</span><a href={`/zapchasti/?brand=${brandSlug}`}>{brandName}</a><span>/</span><b>{category}</b></nav>
+      <section class="hero"><p>Запчасти {brandName} · Липецк</p><h1>{title}</h1><span>{intro}</span><div><a class="primary" href={phoneHref}>Подобрать запчасть</a><a class="secondary" href={`/zapchasti/?brand=${brandSlug}`}>Все запчасти {brandName}</a></div></section>
+      <section aria-labelledby="products-title">
+        <div class="section-title"><div><p>В наличии под заказ</p><h2 id="products-title">{parts.length} позиций в каталоге</h2></div><span>Проверка по модели и серийному номеру</span></div>
+        {category === "Теплообменники" ? <>
+          <section id="osnovnye" class="product-group" aria-labelledby="primary-heat-title">
+            <h3 id="primary-heat-title">Основные и битермические теплообменники</h3>
+            <div class="product-grid">{primaryHeatParts.map((part, index) => <article class="product-card"><a href={`/zapchasti/${brandSlug}/${part.slug}/`}><div class="product-photo"><img src={imageSrcFor(part)} alt={part.name} loading={index < 2 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} /></div><div class="product-info"><p>{part.category}</p><h3>{part.name}</h3><span>Арт. {part.article}</span><b>Открыть карточку →</b></div></a></article>)}</div>
+          </section>
+          <section id="gvs" class="product-group" aria-labelledby="dhw-heat-title">
+            <h3 id="dhw-heat-title">Теплообменники ГВС</h3>
+            <div class="product-grid">{dhwHeatParts.map((part) => <article class="product-card"><a href={`/zapchasti/${brandSlug}/${part.slug}/`}><div class="product-photo"><img src={imageSrcFor(part)} alt={part.name} loading="lazy" fetchpriority="auto" /></div><div class="product-info"><p>{part.category}</p><h3>{part.name}</h3><span>Арт. {part.article}</span><b>Открыть карточку →</b></div></a></article>)}</div>
+          </section>
+        </> : <div class="product-grid">{parts.map((part, index) => <article class="product-card"><a href={`/zapchasti/${brandSlug}/${part.slug}/`}><div class="product-photo"><img src={imageSrcFor(part)} alt={part.name} loading={index < 2 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} /></div><div class="product-info"><p>{part.category}</p><h3>{part.name}</h3><span>Арт. {part.article}</span><b>Открыть карточку →</b></div></a></article>)}</div>}
+      </section>
+      <section class="selection"><h2>{selectionTitle}</h2><p>{selectionText}</p><p>Перед заказом пришлите фото шильдика котла или назовите модель и серийный номер. Это исключает ошибку при выборе и помогает сразу предложить совместимый вариант.</p></section>
+      <section class="faq" aria-labelledby="faq-title"><h2 id="faq-title">Вопросы по подбору</h2>{faq.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}</section>
+      <p class="back"><a href={`/zapchasti/?brand=${brandSlug}`}>← Все запчасти {brandName}</a></p>
+    </main>
+    <footer><div><strong>Gazmaster</strong><span>Ремонт, диагностика и подбор запчастей для котлов в Липецке.</span></div><a href={phoneHref}>{phone}</a></footer>
+  </body>
+</html>
+
+<style>
+  :root { color:#172033; font-family:Arial,sans-serif; background:#f5f7fb; } * { box-sizing:border-box; } body { margin:0; }.site-header { border-bottom:1px solid #e4e8ee; background:#fff; }.header-inner,.container { width:min(1180px,calc(100% - 40px)); margin:0 auto; }.header-inner { display:flex; align-items:center; min-height:76px; gap:25px; }.brand { display:flex; align-items:center; gap:10px; color:#172033; text-decoration:none; }.brand>b { display:grid; place-items:center; width:37px; height:37px; border-radius:12px; color:#172033; background:#f2c94c; font-size:20px; }.brand strong,.brand small { display:block; }.brand strong { font-size:16px; }.brand small { margin-top:3px; color:#7c8796; font-size:10px; }.header-inner nav { display:flex; gap:19px; margin-left:auto; }.header-inner nav a { color:#5b687a; font-size:13px; font-weight:700; text-decoration:none; }.header-inner nav .active { color:#946011; }.call-button,.primary { padding:11px 14px; border-radius:9px; color:#fff; background:#1c2737; font-size:12px; font-weight:800; text-decoration:none; white-space:nowrap; }.container { padding:34px 0 80px; }.breadcrumbs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px; color:#8390a4; font-size:13px; }.breadcrumbs a { color:#526780; text-decoration:none; }.breadcrumbs b { color:#38465c; }.hero { max-width:840px; margin-bottom:40px; }.hero>p,.section-title p { margin:0 0 10px; color:#bd811a; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }.hero h1 { max-width:760px; margin:0 0 16px; font-size:clamp(36px,5vw,58px); letter-spacing:-.055em; line-height:1.05; }.hero>span { display:block; color:#617086; font-size:16px; line-height:1.65; }.hero>div { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }.primary { padding:14px 18px; }.secondary { padding:13px 17px; border:1px solid #e4cf9d; border-radius:9px; color:#795510; background:#fff8e8; font-size:13px; font-weight:800; text-decoration:none; }.section-title { display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:20px; }.section-title p { margin-bottom:5px; }.section-title h2,.selection h2,.faq h2 { margin:0; font-size:clamp(25px,3vw,34px); letter-spacing:-.04em; }.section-title>span { max-width:220px; color:#718096; font-size:12px; line-height:1.4; text-align:right; }.product-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }.product-card { overflow:hidden; border:1px solid #e2e7ee; border-radius:17px; background:#fff; box-shadow:0 8px 22px rgba(30,41,59,.04); }.product-card a { display:block; height:100%; color:inherit; text-decoration:none; }.product-photo { overflow:hidden; aspect-ratio:4 / 3; background:#fff; }.product-photo picture,.product-photo img { display:block; width:100%; height:100%; }.product-photo img { object-fit:cover; }.product-info { display:flex; flex-direction:column; min-height:163px; padding:15px; }.product-info p { margin:0 0 7px; color:#8a96a8; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }.product-info h3 { margin:0 0 12px; color:#1f2c3d; font-size:16px; line-height:1.3; }.product-info span { color:#7c899a; font-size:11px; }.product-info b { margin-top:auto; padding-top:13px; color:#9c6711; font-size:12px; }.selection,.faq { max-width:860px; margin-top:46px; padding:28px; border:1px solid #e2e7ee; border-radius:18px; background:#fff; }.selection h2,.faq h2 { margin-bottom:13px; }.selection p { margin:0 0 10px; color:#5e6d80; font-size:15px; line-height:1.68; }.selection p:last-child { margin-bottom:0; }.faq { background:#fff9ea; border-color:#f1dba4; }.faq details { padding:15px 0; border-top:1px solid #ecdba9; }.faq details:first-of-type { border-top:0; }.faq summary { cursor:pointer; color:#293649; font-size:15px; font-weight:800; }.faq details p { margin:10px 0 0; color:#665c4d; font-size:14px; line-height:1.6; }.back { margin-top:28px; }.back a { color:#946011; font-size:14px; font-weight:800; text-decoration:none; } footer { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:35px max(20px,calc((100% - 1180px)/2)); color:#d6dce4; background:#111827; } footer strong,footer span { display:block; } footer strong { margin-bottom:5px; color:#fff; font-size:18px; } footer span { font-size:12px; } footer>a { color:#f6ca58; font-size:17px; font-weight:800; text-decoration:none; }
+  @media (max-width:900px) { .product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.header-inner nav { display:none; }.call-button { margin-left:auto; } }
+  @media (max-width:620px) { .header-inner,.container { width:min(100% - 32px,1180px); }.header-inner { min-height:68px; }.container { padding:27px 0 56px; }.breadcrumbs { margin-bottom:25px; }.hero { margin-bottom:30px; }.hero>span { font-size:14px; }.section-title { align-items:start; flex-direction:column; }.section-title>span { max-width:none; text-align:left; }.product-grid { grid-template-columns:1fr; }.selection,.faq { margin-top:32px; padding:20px; } footer { align-items:flex-start; flex-direction:column; } }
+  /* Единый ненавязчивый знак владельца поверх товарных фото. */
+  .product-photo { position:relative; isolation:isolate; }.product-photo::after { position:absolute; z-index:1; inset:0; pointer-events:none; background:url('/img/gazmaster-watermark.webp') 10px 10px / 30% auto no-repeat; content:""; opacity:.12; }
+  .brand>b.brand-logo { width:52px; height:42px; border-radius:0; background:transparent; overflow:hidden; }.brand-logo img { display:block; width:100%; height:100%; object-fit:contain; }
+  .product-group { scroll-margin-top:24px; }.product-group + .product-group { margin-top:42px; }.product-group > h3 { margin:0 0 17px; color:#293649; font-size:22px; letter-spacing:-.025em; }
+</style>

@@ -20,16 +20,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const heroSrc = computed(() => props.img || props.desktopSrc)
 const heroAvifSrc = computed(() =>
-  heroSrc.value === '/img/header-boiler-generated-79330917276.png'
+  heroSrc.value === '/img/header-boiler-generated-79330917276.webp'
     ? '/img/header-boiler-generated-79330917276.avif'
     : '',
 )
 const heroWebpSrc = computed(() =>
-  heroSrc.value === '/img/header-boiler-generated-79330917276.png'
+  heroSrc.value === '/img/header-boiler-generated-79330917276.webp'
     ? '/img/header-boiler-generated-79330917276.webp'
     : '',
 )
-const phoneHref = 'tel:+79330917276'
+const phoneHref = 'tel:+79623527002'
 </script>
 
 <template>
@@ -82,6 +82,7 @@ const phoneHref = 'tel:+79330917276'
           <a :href="phoneHref" class="inline-flex items-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-950/30 hover:bg-emerald-400">
             Позвонить мастеру
           </a>
+          <MessengerButtons tone="dark" />
           <a href="#diagnostics" class="inline-flex items-center rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/15">
             Смотреть причины
           </a>

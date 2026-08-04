@@ -1,0 +1,15 @@
+[Unit]
+Description=Gazmaster Max catalog bot and orders relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/project/site-src
+Environment=NODE_EXTRA_CA_CERTS=/root/project/site-src/deploy/certs/russian-trusted-root-ca.pem
+ExecStart=/usr/bin/node /root/project/site-src/scripts/max-catalog-bot.mjs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

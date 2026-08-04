@@ -1,11 +1,56 @@
 <script setup lang="ts">
+import { repairBrands, repairServicePages } from "~/utils/repairSeo";
+
 const title = "Ремонт газовых котлов в Липецке";
 const description =
-  "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: +7 (933) 091-72-76.";
+  "Ремонт газовых котлов в Липецке. Выезд в день обращения, бесплатная диагностика при ремонте, гарантия на работы. Звоните: 8 (962) 352-70-02.";
 const canonical = "https://remontkotlov48.ru/";
+const telegramHref = "https://t.me/gazmasterzip48_bot?start=master";
+const maxHref = "https://max.ru/id482414631253_bot?start=master";
 const yandexMapsUrl = "https://yandex.ru/maps/org/gazmaster/165084897107/?ll=39.535637%2C52.603696&z=16";
 const yandexServicesUrl =
   "https://uslugi.yandex.ru/profile/Gazmaster-108825?occupationId=%2Fremont-i-ustanovka-tehniki&specId=%2Fremont-i-ustanovka-tehniki%2Fdrugoe&text=%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%B3%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85+%D0%BA%D0%BE%D1%82%D0%BB%D0%BE%D0%B2";
+const serviceCards = repairServicePages.map((service) => ({
+  ...service,
+  to: `/lipeck/uslugi/${service.slug}/`,
+}));
+const quickLinks = [
+  {
+    title: "Ремонт газовых котлов",
+    text: "Диагностика, ошибки, розжиг, плата, насос и теплообменник.",
+    to: "/lipeck/uslugi/remont-gazovyh-kotlov/",
+  },
+  {
+    title: "Монтаж газовых котлов",
+    text: "Установка котла, подключение, настройка и проверка запуска.",
+    to: "/lipeck/uslugi/montazh-gazovyh-kotlov/",
+  },
+  {
+    title: "Монтаж отопления, радиаторов и теплого пола",
+    text: "Трубы, установка радиаторов, установка теплого пола, монтаж теплого пола, заполнение и проверка циркуляции.",
+    to: "/lipeck/uslugi/montazh-sistem-otopleniya/",
+  },
+  {
+    title: "Запчасти для котлов",
+    text: "Подбор оригинальных и совместимых запчастей по модели и артикулу.",
+    to: "/zapchasti/",
+  },
+  {
+    title: "Контакты",
+    text: "Телефон мастера, режим работы, район выезда и карточка на Яндекс Картах.",
+    to: "/kontakty/",
+  },
+  {
+    title: "Отзывы клиентов",
+    text: "Опубликованные отзывы о ремонте котлов со ссылками на Яндекс Карты.",
+    to: "/otzyvy/",
+  },
+];
+const brandCards = repairBrands.map((brand) => ({
+  ...brand,
+  title: "alias" in brand && brand.alias ? `${brand.name} / ${brand.alias}` : brand.name,
+  to: `/lipeck/remont/${brand.slug}/`,
+}));
 
 useHead({
   title,
@@ -15,9 +60,18 @@ useHead({
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: canonical },
-    { property: "og:image", content: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.png" },
+    { property: "og:image", content: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp" },
   ],
-  link: [{ rel: "canonical", href: canonical }],
+  link: [
+    { rel: "canonical", href: canonical },
+    {
+      rel: "preload",
+      as: "image",
+      href: "/img/header-boiler-generated-79330917276.avif",
+      type: "image/avif",
+      fetchpriority: "high",
+    },
+  ],
   script: [
     {
       type: "application/ld+json",
@@ -29,16 +83,8 @@ useHead({
         url: canonical,
         hasMap: yandexMapsUrl,
         sameAs: [yandexMapsUrl, yandexServicesUrl],
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          reviewCount: "49",
-          ratingCount: "55",
-          bestRating: "5",
-          worstRating: "1",
-        },
-        image: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.png",
-        telephone: "+7 (933) 091-72-76",
+        image: "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp",
+        telephone: "8 (962) 352-70-02",
         priceRange: "$$",
         areaServed: {
           "@type": "City",
@@ -58,21 +104,23 @@ useHead({
           },
         ],
         makesOffer: [
-          {
+          ...repairServicePages.map((service) => ({
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
-              name: "Ремонт газовых котлов",
+              name: service.title,
             },
-          },
-          {
-            "@type": "Offer",
-            itemOffered: {
-              "@type": "Service",
-              name: "Обслуживание газовых котлов",
-            },
-          },
+          })),
         ],
+      }),
+    },
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SiteNavigationElement",
+        name: quickLinks.map((item) => item.title),
+        url: quickLinks.map((item) => `https://remontkotlov48.ru${item.to}`),
       }),
     },
   ],
@@ -86,9 +134,14 @@ useHead({
         <source srcset="/img/header-boiler-generated-79330917276.avif" type="image/avif" />
         <source srcset="/img/header-boiler-generated-79330917276.webp" type="image/webp" />
         <img
-          src="/img/header-boiler-generated-79330917276.png"
+          src="/img/header-boiler-generated-79330917276.webp"
           alt="Мастер ремонтирует газовый котёл"
           class="hero-image"
+          width="1600"
+          height="604"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
         />
       </picture>
       <div class="hero-content">
@@ -100,10 +153,48 @@ useHead({
         </ul>
         <a
           class="hero-phone"
-          href="tel:+79330917276"
-          aria-label="Позвонить +7 (933) 091-72-76"
+          href="tel:+79623527002"
+          aria-label="Позвонить 8 (962) 352-70-02"
         >
-          +7 (933) 091-72-76
+          8 (962) 352-70-02
+        </a>
+        <div class="hero-messengers">
+          <a :href="telegramHref" target="_blank" rel="noopener" class="hero-messenger hero-messenger-telegram">
+            <svg class="hero-messenger-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.6 18.6 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.5 12.8l-4.7-1.5c-1-.3-1-1 .2-1.5l18.5-7.1c.9-.3 1.6.2.9 1.9Z" /></svg>
+            Написать в Telegram
+          </a>
+          <a :href="maxHref" target="_blank" rel="noopener" class="hero-messenger hero-messenger-max">Написать в Max</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="village-banner" aria-labelledby="village-banner-title">
+      <picture class="village-banner-image">
+        <source
+          media="(max-width: 640px)"
+          srcset="/img/schastlivy-kvartal/banner-mobile.webp"
+        />
+        <img
+          src="/img/schastlivy-kvartal/banner.webp"
+          alt="Готовые дома в коттеджном посёлке «Счастливый Квартал»"
+          loading="lazy"
+          fetchpriority="low"
+          decoding="async"
+        />
+      </picture>
+      <div class="village-banner-shade"></div>
+      <div class="village-banner-content">
+        <p class="village-banner-label">Коттеджный посёлок «Счастливый Квартал»</p>
+        <h2 id="village-banner-title">Готовые дома с участком рядом с Липецком</h2>
+        <p class="village-banner-text">с. Ленино · 6 км от Липецка · от 8,5 млн ₽</p>
+        <a
+          class="village-banner-link"
+          href="https://kvartal-lipetsk.ru/?utm_source=remontkotlov48&utm_medium=banner&utm_campaign=schastlivy_kvartal"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Посмотреть дома
+          <span aria-hidden="true">→</span>
         </a>
       </div>
     </section>
@@ -159,18 +250,74 @@ useHead({
           </div>
         </div>
 
+        <section class="quick-links" aria-labelledby="quick-links-title">
+          <div class="section-head">
+            <h2 id="quick-links-title">Основные разделы</h2>
+            <p>Быстрые переходы на ключевые услуги и контакты мастера.</p>
+          </div>
+          <div class="quick-grid">
+            <NuxtLink
+              v-for="item in quickLinks"
+              :key="item.to"
+              :to="item.to"
+              class="quick-card"
+            >
+              <span class="quick-title">{{ item.title }}</span>
+              <span class="quick-text">{{ item.text }}</span>
+            </NuxtLink>
+          </div>
+        </section>
+
+        <section class="services" aria-labelledby="services-title">
+          <div class="section-head">
+            <h2 id="services-title">Услуги</h2>
+            <p>Ремонт, обслуживание, монтаж котлов и систем отопления в Липецке и области.</p>
+          </div>
+          <div class="service-grid">
+            <NuxtLink
+              v-for="service in serviceCards"
+              :key="service.slug"
+              :to="service.to"
+              class="service-card"
+            >
+              <span class="service-title">{{ service.title }}</span>
+              <span class="service-text">{{ service.lead }}</span>
+            </NuxtLink>
+          </div>
+        </section>
+
+        <section class="brands" aria-labelledby="brands-title">
+          <div class="section-head">
+            <h2 id="brands-title">Марки котлов</h2>
+            <p>Ремонтируем популярные газовые котлы, включая Ariston / Аристон.</p>
+          </div>
+          <div class="brand-grid">
+            <NuxtLink
+              v-for="brand in brandCards"
+              :key="brand.slug"
+              :to="brand.to"
+              class="brand-card"
+            >
+              <img v-if="brand.logo" :src="brand.logo" :alt="`Логотип ${brand.name}`" class="brand-logo" />
+              <span v-else class="brand-logo-text">{{ brand.name }}</span>
+              <span class="brand-title">{{ brand.title }}</span>
+            </NuxtLink>
+          </div>
+        </section>
+
         <div class="cta">
           <p class="cta-title">Нужен мастер по ремонту газового котла?</p>
           <p class="cta-text">
             Позвоните прямо сейчас — проконсультируем по симптомам поломки,
             сориентируем по выезду и запишем мастера на удобное время.
           </p>
-          <a class="phone" href="tel:+79330917276">+7 (933) 091-72-76</a>
+          <a class="phone" href="tel:+79623527002">8 (962) 352-70-02</a>
         </div>
       </div>
     </section>
 
     <LocalTrustBlock region="Липецк" region-route="Липецку" service="ремонту газовых котлов" />
+    <ReviewsBlock compact />
   </main>
 </template>
 
@@ -265,6 +412,140 @@ useHead({
   font-size: 0.85em;
 }
 
+.hero-messengers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.hero-messenger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.hero-messenger:hover {
+  transform: translateY(-2px);
+}
+
+.hero-messenger-telegram {
+  background: #229ed9;
+}
+
+.hero-messenger-telegram:hover {
+  background: #1687c0;
+}
+
+.hero-messenger-max {
+  background: #2767ff;
+}
+
+.hero-messenger-max:hover {
+  background: #1f57d6;
+}
+
+.hero-messenger-icon {
+  width: 19px;
+  height: 19px;
+  margin-right: 9px;
+}
+
+.village-banner {
+  position: relative;
+  display: grid;
+  min-height: clamp(340px, 33vw, 510px);
+  overflow: hidden;
+  background: #18345a;
+  color: #fff;
+}
+
+.village-banner-image,
+.village-banner-image img,
+.village-banner-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.village-banner-image img {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.village-banner-shade {
+  background: linear-gradient(90deg, rgba(8, 21, 37, 0.88) 0%, rgba(8, 21, 37, 0.63) 42%, rgba(8, 21, 37, 0.08) 76%);
+}
+
+.village-banner-content {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: min(92vw, 1440px);
+  margin: 0 auto;
+  padding: 42px 0;
+}
+
+.village-banner-label {
+  margin: 0 0 12px;
+  color: #ffe58a;
+  font-size: clamp(14px, 1.25vw, 18px);
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.village-banner h2 {
+  max-width: 720px;
+  margin: 0 0 16px;
+  color: #fff;
+  font-size: clamp(32px, 4vw, 58px);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.village-banner-text {
+  margin: 0 0 26px;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: clamp(16px, 1.65vw, 23px);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.village-banner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 14px;
+  background: #ffd200;
+  padding: 15px 22px;
+  color: #172234;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.village-banner-link:hover {
+  background: #ffe26c;
+  transform: translateY(-2px);
+}
+
+.village-banner-link span {
+  font-size: 23px;
+  line-height: 0.7;
+}
+
 .content {
   padding: clamp(32px, 4vw, 64px) 0 clamp(56px, 6vw, 96px);
 }
@@ -325,6 +606,162 @@ p {
   line-height: 1.6;
 }
 
+.quick-links,
+.services {
+  margin: 44px 0;
+}
+
+.section-head {
+  max-width: 760px;
+  margin-bottom: 22px;
+}
+
+.section-head h2 {
+  margin: 0 0 10px;
+  color: #0f2247;
+  font-size: 34px;
+  line-height: 1.15;
+}
+
+.section-head p {
+  margin: 0;
+  color: #425675;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.quick-card {
+  display: grid;
+  gap: 10px;
+  min-height: 144px;
+  padding: 20px;
+  border: 1px solid rgba(15, 34, 71, 0.12);
+  border-radius: 16px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(15, 34, 71, 0.07);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.quick-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(30, 79, 168, 0.35);
+}
+
+.quick-title {
+  color: #0f2247;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.quick-text {
+  color: #425675;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.service-card {
+  display: grid;
+  gap: 10px;
+  min-height: 168px;
+  padding: 22px;
+  border: 1px solid rgba(15, 34, 71, 0.12);
+  border-radius: 16px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(15, 34, 71, 0.07);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(30, 79, 168, 0.35);
+}
+
+.service-title {
+  color: #0f2247;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.service-text {
+  color: #425675;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.brands {
+  margin: 44px 0;
+}
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.brand-card {
+  display: grid;
+  min-height: 126px;
+  align-content: space-between;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid rgba(15, 34, 71, 0.12);
+  border-radius: 16px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(15, 34, 71, 0.07);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.brand-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(30, 79, 168, 0.35);
+}
+
+.brand-logo {
+  max-width: 150px;
+  max-height: 44px;
+  object-fit: contain;
+}
+
+.brand-logo-text {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 44px;
+  align-items: center;
+  border-radius: 12px;
+  background: #0f2247;
+  padding: 0 14px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.brand-title {
+  color: #0f2247;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
 .cta {
   background: linear-gradient(135deg, #0f2247, #1e4fa8);
   color: #fff;
@@ -369,6 +806,10 @@ p {
     width: min(640px, 66vw);
   }
 
+  .hero-messengers {
+    display: none;
+  }
+
   h1 {
     font-size: 32px;
   }
@@ -378,6 +819,12 @@ p {
   }
 
   .benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-grid,
+  .service-grid,
+  .brand-grid {
     grid-template-columns: 1fr;
   }
 
@@ -393,6 +840,38 @@ p {
 }
 
 @media (max-width: 600px) {
+  .village-banner {
+    min-height: 490px;
+  }
+
+  .village-banner-image img {
+    object-position: center;
+  }
+
+  .village-banner-shade {
+    background: linear-gradient(180deg, rgba(8, 21, 37, 0.74) 0%, rgba(8, 21, 37, 0.38) 52%, rgba(8, 21, 37, 0.84) 100%);
+  }
+
+  .village-banner-content {
+    align-self: end;
+    padding: 32px 0;
+  }
+
+  .village-banner h2 {
+    max-width: 360px;
+    font-size: 32px;
+  }
+
+  .village-banner-text {
+    margin-bottom: 20px;
+    font-size: 17px;
+  }
+
+  .village-banner-link {
+    padding: 14px 18px;
+    font-size: 16px;
+  }
+
   .hero-image {
     min-height: 460px;
     object-fit: cover;
@@ -447,6 +926,16 @@ p {
     padding: 22px;
   }
 
+  .section-head h2 {
+    font-size: 28px;
+  }
+
+  .service-card,
+  .brand-card {
+    min-height: auto;
+    padding: 20px;
+  }
+
   .cta {
     padding: 24px 18px;
   }
@@ -492,5 +981,6 @@ p {
   .hero-phone {
     font-size: 28px;
   }
+
 }
 </style>

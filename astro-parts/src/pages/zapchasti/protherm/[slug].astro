@@ -1,0 +1,220 @@
+---
+import { Picture } from "astro:assets";
+import type { GetStaticPaths, ImageMetadata } from "astro";
+import type { SparePart } from "../../../../../app/data/spareParts";
+import { buildProductSeo, buildProductTitle, preferredProductSlug } from "../../../../../app/data/productSeo";
+import { sparePartsBrands } from "../../../../../app/data/spareParts";
+
+const phone = "8 (962) 352-70-02";
+const phoneHref = "tel:+79623527002";
+const brand = sparePartsBrands.find((item) => item.slug === "protherm")!;
+const imageFilesBySlug = new Map([
+  ["fime-gr04035-0020118666", "fan-01.webp"],
+  ["kexinte-gepard-pantera-h-ru", "fan-02.webp"],
+  ["sohon-gepard-pantera-h-ru", "fan-03.webp"],
+  ["gepard-23-mtv-0020098002", "fan-04.webp"],
+  ["fime-pantera-18-19", "fan-05.webp"],
+  ["fime-vgr01855-gepard-pantera", "fan-06.webp"],
+  ["fime-leopard-pantera-tigr-rys", "fan-07.webp"],
+  ["pantera-12-kto-0020034890", "fan-08.webp"],
+  ["rlh120-pt50-0020034951", "fan-09.webp"],
+  ["pantera-35-ktv-h-ru-0020200682", "fan-10.webp"],
+  ["bitermicheskiy-heatwave-rys-leopard-0020025297", "heat-01.webp"],
+  ["vtorichnyy-12-plastin-pantera-15-17-0020043598", "heat-02.webp"],
+  ["gvs-itm-16-lev-pantera-0020014402", "heat-03.webp"],
+  ["gvs-swep-16-lev-pantera-0020014402", "heat-04.webp"],
+  ["gvs-zilmet-12-lynx-0020119605", "heat-05.webp"],
+  ["pervichnyy-gepard-mov-pantera-0020142418", "heat-06.webp"],
+  ["pervichnyy-heatwave-pantera-30-kov-0020200592", "heat-07.webp"],
+  ["pervichnyy-heatwave-gepard-0020142414", "heat-08.webp"],
+  ["pervichnyy-heatwave-gepard-pantera-0020142418", "heat-09.webp"],
+  ["pervichnyy-lynx-yaguar-0020120231", "heat-10.webp"],
+  ["pervichnyy-gepard-pantera-25-0020142420", "heat-11.webp"],
+  ["pervichnyy-pantera-30-kov-2015-0020200592", "heat-12.webp"],
+  ["pervichnyy-pantera-30-ktv-0020048243", "heat-13.webp"],
+  ["pervichnyy-pantera-30-ktv-2015-0020200595", "heat-14.webp"],
+  ["pervichnyy-pantera-tigr-0020025264", "heat-15-clean.webp"],
+  ["vtorichnyy-12-plastin-gepard-pantera-0020059452", "heat-16.webp"],
+  ["vtorichnyy-12-plastin-pantera-v15-0020043598", "heat-17.webp"],
+  ["vtorichnyy-zilmet-12-pantera-0020043598", "heat-18.webp"],
+  ["vtorichnyy-lynx-yaguar-0020119605", "heat-19.webp"],
+  ["vtorichnyy-pantera-25-0020186152", "heat-20.webp"],
+  ["vtorichnyy-pantera-30-35-0020186153", "heat-21.webp"],
+  ["vtorichnyy-pantera-30-ktv-0020097179", "heat-22.webp"],
+  ["vtorichnyy-swep-pantera-0020043598", "heat-23.webp"],
+]);
+const galleryImageFilesBySlug = new Map<string, string[]>([
+  ["bitermicheskiy-heatwave-rys-leopard-0020025297", ["gallery-01.webp", "measure-01-03.webp"]],
+  ["vtorichnyy-12-plastin-pantera-15-17-0020043598", ["gallery-02.webp"]],
+  ["gvs-itm-16-lev-pantera-0020014402", ["gallery-03.webp"]],
+  ["gvs-swep-16-lev-pantera-0020014402", ["gallery-04.webp"]],
+  ["gvs-zilmet-12-lynx-0020119605", ["gallery-05.webp"]],
+  ["pervichnyy-gepard-mov-pantera-0020142418", ["gallery-06.webp", "measure-06-08.webp", "measure-06-09.webp"]],
+  ["pervichnyy-heatwave-pantera-30-kov-0020200592", ["gallery-07.webp", "measure-07-03.webp"]],
+  ["pervichnyy-heatwave-gepard-0020142414", ["gallery-08.webp", "measure-08.webp"]],
+  ["pervichnyy-heatwave-gepard-pantera-0020142418", ["gallery-09.webp", "measure-09.webp"]],
+  ["pervichnyy-lynx-yaguar-0020120231", ["gallery-10.webp", "measure-10-03.webp", "measure-10.webp"]],
+  ["pervichnyy-gepard-pantera-25-0020142420", ["gallery-11.webp", "measure-11-07.webp", "measure-11-08.webp"]],
+  ["pervichnyy-pantera-tigr-0020025264", ["gallery-15-clean.webp", "measure-15-02.webp"]],
+  ["vtorichnyy-12-plastin-gepard-pantera-0020059452", ["gallery-16.webp"]],
+  ["vtorichnyy-12-plastin-pantera-v15-0020043598", ["gallery-17.webp"]],
+  ["vtorichnyy-zilmet-12-pantera-0020043598", ["gallery-18.webp"]],
+  ["vtorichnyy-lynx-yaguar-0020119605", ["gallery-19.webp"]],
+  ["vtorichnyy-pantera-25-0020186152", ["gallery-20.webp"]],
+  ["vtorichnyy-pantera-30-35-0020186153", ["gallery-21.webp"]],
+  ["vtorichnyy-pantera-30-ktv-0020097179", ["gallery-22.webp"]],
+  ["vtorichnyy-swep-pantera-0020043598", ["gallery-23.webp"]],
+]);
+const compatibleModelsBySlug = new Map<string, string[]>([
+  ["bitermicheskiy-heatwave-rys-leopard-0020025297", ["Рысь 23 BOV","Рысь 23 BTV","Леопард 24 BOV 15","Леопард 24 BTV 15","Леопард 24 BOV 17","Леопард 24 BTV 17"]],
+  ["vtorichnyy-12-plastin-pantera-15-17-0020043598", ["Пантера 24 KTV 15 (24 кВт, версия 15)","Пантера 24 KOV 15 (24 кВт, версия 15)","Пантера 24 KTV 17 (24 кВт, версия 17)","Пантера 24 KOV 17 (24 кВт, версия 17)","Пантера 28 KTV 17 (28 кВт, версия 17)"]],
+  ["gvs-itm-16-lev-pantera-0020014402", ["Лев 24 KKV v.18","Лев 28 KKV v.18","Пантера 24 KOV v.18","Пантера 24 KTV v.18","Пантера 30 KTV v.19","Пантера 30 KOV (H-RU)","Пантера 30 KTV (H-RU)","Пантера 35 KTV (H-RU)"]],
+  ["gvs-swep-16-lev-pantera-0020014402", ["Лев 24 KKV v.18","Лев 28 KKV v.18","Пантера 24 KOV v.18","Пантера 24 KTV v.18","Пантера 30 KTV v.19","Пантера 30 KOV (H-RU)","Пантера 30 KTV (H-RU)","Пантера 35 KTV (H-RU)"]],
+  ["gvs-zilmet-12-lynx-0020119605", ["Protherm Lynx HK 24","Protherm Lynx HK 28","Protherm Ягуар 11 JTV","Protherm Ягуар 24 JTV"]],
+  ["pervichnyy-gepard-mov-pantera-0020142418", ["Гепард 11 MOV v.19","Гепард 12 MOV H-RU","Гепард 23 MOV H-RU","Гепард 23 MOV v.19","Пантера 24 KOO 18","Пантера 24 KOV 18","Пантера 24 KTO 18","Пантера 24 KTV 18","Пантера 25 KOO 19","Пантера 25 KOO H-RU","Пантера 25 KOV 19","Пантера 25 KOV H-RU","Пантера 25 KTO 19","Пантера 25 KTV 19"]],
+  ["pervichnyy-heatwave-gepard-0020142414", ["Гепард 11 MТV v.19","Гепард 23 MТV v.19","Пантера 12 KTO H-RU"]],
+  ["pervichnyy-heatwave-gepard-pantera-0020142418", ["Гепард 11 MOV v.19","Гепард 12 MOV H-RU","Гепард 23 MOV H-RU","Гепард 23 MOV v.19","Пантера 24 KOO 18","Пантера 24 KOV 18","Пантера 24 KTO 18","Пантера 24 KTV 18","Пантера 25 KOO 19","Пантера 25 KOO H-RU","Пантера 25 KOV 19","Пантера 25 KOV H-RU","Пантера 25 KTO 19","Пантера 25 KTV 19"]],
+  ["pervichnyy-lynx-yaguar-0020120231", ["Lynx HK 11","Lynx HK 24","Ягуар (Jaguar) 11 JTV","Ягуар (Jaguar) 24 JTV"]],
+  ["pervichnyy-gepard-pantera-25-0020142420", ["Гепард 23 MTV H-RU","Пантера 25 KTV H-RU","Пантера 25 KTO H-RU"]],
+  ["pervichnyy-pantera-tigr-0020025264", ["Пантера 24 KTV v.15","Пантера 24 KTO v.15","Пантера 24 KOO v.15","Пантера 24 KOV v.15","Пантера 24 KTO v.17","Пантера 24 KOO v.17","Пантера 24 KOV v.17","Пантера 24 KTV v.17","Тигр 24 KTV v.12","Тигр 24 KOV v.12","Тигр 24 KTO v.12","Тигр 24 KOO v.12","Тигр 24 KTZ v.12","Тигр 24 KOZ v.12","Тигр 24 KTZ v.17","Тигр 24 KOZ v.17"]],
+  ["vtorichnyy-12-plastin-gepard-pantera-0020059452", ["Гепард 11 MOV v. 19","Гепард 11 MTV v. 19","Гепард 23 MOV v. 19","Гепард 23 MTV v. 19","Пантера 24 KOV v. 18","Пантера 24 KTV v. 18","Пантера 25 KOV v. 19","Пантера 25 KTV v. 19","Пантера 25 KOV H-RU","Пантера 25 KTV H-RU"]],
+  ["vtorichnyy-12-plastin-pantera-v15-0020043598", ["Пантера 24 KTV 15 (24 кВт, версия 15)","Пантера 24 KOV 15 (24 кВт, версия 15)","Пантера 24 KTV 17 (24 кВт, версия 17)","Пантера 24 KOV 17 (24 кВт, версия 17)","Пантера 28 KTV 17 (28 кВт, версия 17)"]],
+  ["vtorichnyy-zilmet-12-pantera-0020043598", ["Пантера 24 KTV 15 (24 кВт, версия 15)","Пантера 24 KOV 15 (24 кВт, версия 15)","Пантера 24 KTV 17 (24 кВт, версия 17)","Пантера 24 KOV 17 (24 кВт, версия 17)","Пантера 28 KTV 17 (28 кВт, версия 17)"]],
+  ["vtorichnyy-lynx-yaguar-0020119605", ["Protherm Lynx HK 24","Protherm Lynx HK 28","Protherm Ягуар 11 JTV","Protherm Ягуар 24 JTV","Protherm Гепард 12 MOV H-RU","Protherm Гепард 23 MOV H-RU","Protherm Гепард 12 MTV H-RU","Protherm Гепард 23 MTV H-RU"]],
+  ["vtorichnyy-pantera-25-0020186152", ["Пантера 25 KOV H-RU","Пантера 25 KTV H-RU"]],
+  ["vtorichnyy-pantera-30-35-0020186153", ["Пантера 30 KOV (H-RU)","Пантера 30 KTV (H-RU)","Пантера 35 KTV (H-RU)"]],
+  ["vtorichnyy-swep-pantera-0020043598", ["Пантера 24 KTV 15 (24 кВт, версия 15)","Пантера 24 KOV 15 (24 кВт, версия 15)","Пантера 24 KTV 17 (24 кВт, версия 17)","Пантера 24 KOV 17 (24 кВт, версия 17)","Пантера 28 KTV 17 (28 кВт, версия 17)"]],
+  ["gepard-23-mtv-0020098002", ["Protherm Гепард 11 MTV v.19 (версия 19)","Protherm Гепард 23 MTV v.19 (версия 19)","Saunier Duval Semia F24"]],
+  ["fime-pantera-18-19", ["Пантера 24 KTO v.18 (версия 18)","Пантера 24 KTV v.18 (версия 18)","Пантера 25 KTV v.19 (версия 19)","Пантера 25 KTО v.19 (версия 19)","Saunier Duval Themaclassic F 24 E","Saunier Duval Themaclassic F 24 E 1","Saunier Duval Themaclassic F 25 E","Saunier Duval Combitek F 24 E","Saunier Duval Thematek F 24 E"]],
+  ["fime-vgr01855-gepard-pantera", ["Гепард 12 MTV (H-RU )","Гепард 23 MTV (H-RU)","Пантера 12 KTO H-RU","Пантера 25 KTV H-RU","Пантера 25 KTO H-RU","Пантера 30 KTV H-RU"]],
+  ["kexinte-gepard-pantera-h-ru", ["Гепард 12 MTV (H-RU )","Гепард 23 MTV (H-RU)","Пантера 12 KTO H-RU","Пантера 25 KTV H-RU","Пантера 25 KTO H-RU","Пантера 30 KTV H-RU"]],
+  ["fime-leopard-pantera-tigr-rys", ["Protherm Леопард 24 BTV 15","Protherm Леопард 24 BTV 17","Protherm Пантера 24 KTV 15","Protherm Пантера 24 KTO 15","Protherm Пантера 24 KTO 17","Protherm Пантера 24 KTV 17","Protherm Рысь 23 BTV","Protherm Тигр 24 KTZ 17"]],
+  ["fime-gr04035-0020118666", ["Protherm Lynx HK 11","Protherm Lynx HK 24","Protherm Lynx HK 28","Protherm Ягуар (Jaguar) 11 JTV","Protherm Ягуар (Jaguar) 24 JTV"]],
+  ["pantera-12-kto-0020034890", ["Пантера (Panther) 12 KTO v.15","Пантера (Panther) 12 KTO v.17","Пантера (Panther) 12 KTO v.18","Пантера (Panther) 12 KTO v.19"]],
+  ["pantera-35-ktv-h-ru-0020200682", ["Protherm Пантера 35 KTV H-RU"]],
+  ["sohon-gepard-pantera-h-ru", ["Гепард 12 MTV (H-RU )","Гепард 23 MTV (H-RU)","Пантера 12 KTO H-RU","Пантера 25 KTV H-RU","Пантера 25 KTO H-RU","Пантера 30 KTV H-RU"]],
+]);
+const images = import.meta.glob<{ default: ImageMetadata }>("../../../assets/spare-parts/optimized/*.{webp,png}", { eager: true });
+const imageByFile = new Map(Object.entries(images).map(([path, image]) => [path.split("/").at(-1)!, image.default]));
+
+export const getStaticPaths = (() => {
+  const protherm = sparePartsBrands.find((item) => item.slug === "protherm")!;
+  return protherm.parts
+    .filter((part) => part.slug)
+    .map((part) => ({ params: { slug: part.slug! }, props: { part } }));
+}) satisfies GetStaticPaths;
+
+const { part } = Astro.props as { part: SparePart };
+const requestPayload = `request-protherm-${brand.parts.indexOf(part).toString(36)}`;
+const telegramRequestUrl = `/zapchasti/request/?start=${requestPayload}`;
+const canonicalSlug = preferredProductSlug("Protherm", part.slug);
+const isDuplicate = canonicalSlug !== part.slug;
+const canonical = `https://remontkotlov48.ru/zapchasti/protherm/${canonicalSlug}/`;
+const imageFile = imageFilesBySlug.get(part.slug ?? "");
+const productImage = imageFile ? imageByFile.get(imageFile) : undefined;
+if (!productImage) throw new Error(`Не найдено изображение товара ${part.slug}`);
+const ogImage = new URL(productImage.src, "https://remontkotlov48.ru").href;
+const galleryImages = [imageFile, ...(galleryImageFilesBySlug.get(part.slug ?? "") ?? [])]
+  .map((file) => ({ file, image: file ? imageByFile.get(file) : undefined }))
+  .filter((item): item is { file: string; image: ImageMetadata } => Boolean(item.image));
+const compatibleModels = compatibleModelsBySlug.get(part.slug ?? "") ?? [];
+const seo = buildProductSeo(part, "Protherm", compatibleModels);
+const title = buildProductTitle(part);
+const seoModels = compatibleModels.slice(0, 3);
+const compatibilitySeoText = seoModels.length ? ` Подходит для моделей: ${seoModels.join(", ")}.` : "";
+const categoryUrl = part.category === "Вентиляторы" ? "/zapchasti/protherm/ventilyatory/" : "/zapchasti/protherm/teploobmenniki/";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Product",
+      name: part.name,
+      description: seo.lead,
+      sku: part.article,
+      category: part.category,
+      brand: { "@type": "Brand", name: "Protherm" },
+      url: canonical,
+      additionalProperty: compatibleModels.map((model) => ({ "@type": "PropertyValue", name: "Совместимая модель котла", value: model })),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Главная", item: "https://remontkotlov48.ru/" },
+        { "@type": "ListItem", position: 2, name: "Запчасти", item: "https://remontkotlov48.ru/zapchasti/" },
+        { "@type": "ListItem", position: 3, name: `Protherm · ${part.category}`, item: `https://remontkotlov48.ru${categoryUrl}` },
+        { "@type": "ListItem", position: 4, name: part.name, item: canonical },
+      ],
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={seo.metaDescription} />
+    <meta name="robots" content={isDuplicate ? "noindex, follow" : "index, follow, max-image-preview:large"} />
+    <meta property="og:type" content="product" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content={`${part.name} — купить в Липецке | Gazmaster`} />
+    <meta property="og:description" content={`${part.name} для котлов Protherm. Артикул ${part.article}.${compatibilitySeoText}`} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={part.name} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" href={canonical} hreflang="ru-RU" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner"><a class="brand" href="/" aria-label="Gazmaster — главная"><b class="brand-logo"><img src="/img/gazmaster-watermark.webp" alt="" /></b><span><strong>Gazmaster</strong><small>Ремонт котлов · Липецк</small></span></a><nav aria-label="Основная навигация"><a href="/lipeck/uslugi/remont-gazovyh-kotlov/">Ремонт котлов</a><a href="/zapchasti/">Запчасти</a></nav><a class="header-phone" href={phoneHref}>{phone}</a></div>
+    </header>
+    <main>
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="/">Главная</a><span>/</span><a href="/zapchasti/">Запчасти</a><span>/</span><a href={categoryUrl}>Protherm · {part.category}</a><span>/</span><b>{part.name}</b></nav>
+        <article class="product">
+          <div class="product-gallery" data-product-gallery>
+            <div class="product-image">
+              {galleryImages.map((item, index) => <div class:list={["gallery-frame", { active: index === 0 }]} data-gallery-frame={index} hidden={index !== 0}><Picture src={item.image} alt={`${part.name}${index ? item.file.startsWith("measure-") ? " — размеры по линейке" : ` — ракурс ${index + 1}` : ""}`} formats={["avif", "webp"]} fallbackFormat="webp" widths={[520, 880, 1200]} sizes="(max-width: 760px) calc(100vw - 32px), 560px" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} /></div>)}
+            </div>
+            {galleryImages.length > 1 && <div class="gallery-thumbs" aria-label="Другие ракурсы товара">{galleryImages.map((item, index) => <button class:list={[{ active: index === 0 }, { measurement: item.file.startsWith("measure-") }]} type="button" data-gallery-thumb={index} aria-label={item.file.startsWith("measure-") ? "Показать размеры по линейке" : `Показать ракурс ${index + 1}`} aria-pressed={index === 0}><Picture src={item.image} alt={`${part.name}${item.file.startsWith("measure-") ? " — размеры по линейке" : index ? ` — ракурс ${index + 1}` : ""}`} formats={["webp"]} fallbackFormat="webp" widths={[100, 160]} sizes="76px" loading="lazy" />{item.file.startsWith("measure-") && <span>Размеры</span>}</button>)}</div>}
+          </div>
+          <div class="product-details"><p class="eyebrow">Запчасти Protherm · {part.category}</p><h1>{part.name}</h1><p class="article-number">Артикул: <b>{part.article}</b></p><p class="lead">{seo.lead}</p><div class="availability"><b>Наличие и цена</b><span>Срок поставки — до 7 дней после подтверждения артикула.</span><span>Гарантия — 12 месяцев при правильной эксплуатации котла.</span></div><a class="buy-button" href={phoneHref}>Уточнить цену и наличие</a><p class="note">Для точного подбора сообщите модель котла и серийный номер оборудования.</p></div>
+        </article>
+        <section class="details"><h2>Совместимые модели котлов</h2>{compatibleModels.length ? <ul class="models-list">{compatibleModels.map((model) => <li>{model}</li>)}</ul> : <p>Совместимость уточняем по модели и серийному номеру котла.</p>}<p class="compatibility-note">Перед заказом обязательно сверяем совместимость детали с конкретной моделью и комплектацией котла.</p><h2>Особенности подбора</h2><p>{seo.details}</p><h2>Как заказать</h2><p>Позвоните нам или оставьте заявку: назовите артикул <b>{part.article}</b> либо отправьте фото шильдика. Подтвердим цену и наличие; срок поставки — до 7 дней.</p></section>
+        <p class="back"><a href="/zapchasti/">← Вернуться к каталогу запчастей</a></p>
+      </div>
+    </main>
+    <footer><div><strong>Gazmaster</strong><span>Ремонт, диагностика и обслуживание газовых котлов в Липецке и области.</span></div><a href={phoneHref}>{phone}</a></footer>
+    <script>
+      document.querySelectorAll<HTMLElement>("[data-product-gallery]").forEach((gallery) => {
+        const frames = gallery.querySelectorAll<HTMLElement>("[data-gallery-frame]");
+        const thumbs = gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumb]");
+        thumbs.forEach((thumb) => thumb.addEventListener("click", () => {
+          const selected = thumb.dataset.galleryThumb;
+          frames.forEach((frame) => { frame.hidden = frame.dataset.galleryFrame !== selected; frame.classList.toggle("active", frame.dataset.galleryFrame === selected); });
+          thumbs.forEach((item) => { const active = item === thumb; item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active)); });
+        }));
+      });
+    </script>
+  </body>
+</html>
+
+<script define:vars={{ requestLink: telegramRequestUrl }}>
+  const orderButton = document.querySelector<HTMLAnchorElement>("a.buy-button");
+  if (orderButton) {
+    orderButton.href = requestLink;
+    orderButton.textContent = "Выбрать мессенджер";
+  }
+</script>
+
+<style>
+  :root { color:#172033; font-family:Arial,sans-serif; background:#f5f7fb; } * { box-sizing:border-box; } body { margin:0; }.site-header { position:sticky; top:0; z-index:5; border-bottom:1px solid #e4e8ee; background:rgba(255,255,255,.94); backdrop-filter:blur(12px); }.header-inner,.container { width:min(1180px,calc(100% - 40px)); margin:0 auto; }.header-inner { display:flex; align-items:center; min-height:76px; gap:25px; }.brand { display:flex; align-items:center; gap:10px; color:#172033; text-decoration:none; }.brand>b { display:grid; place-items:center; width:37px; height:37px; border-radius:12px; color:#172033; background:#f2c94c; font-size:20px; }.brand strong,.brand small { display:block; }.brand strong { font-size:16px; }.brand small { margin-top:3px; color:#7c8796; font-size:10px; }.header-inner nav { display:flex; gap:19px; margin-left:auto; }.header-inner nav a { color:#5b687a; font-size:13px; font-weight:700; text-decoration:none; }.header-inner nav a:last-child { color:#946011; }.header-phone { color:#1b2737; font-size:13px; font-weight:800; text-decoration:none; white-space:nowrap; }.container { padding:36px 0 78px; }.breadcrumbs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:30px; color:#8390a4; font-size:13px; }.breadcrumbs a { color:#526780; text-decoration:none; }.breadcrumbs b { color:#38465c; }.product { display:grid; grid-template-columns:minmax(0,1fr) minmax(360px,.88fr); gap:54px; align-items:start; padding:26px; border:1px solid #e2e7ee; border-radius:20px; background:#fff; box-shadow:0 12px 30px rgba(30,41,59,.05); }.product-image { overflow:hidden; border-radius:14px; background:#fff; aspect-ratio:4 / 3; }.gallery-frame { width:100%; height:100%; }.product-image picture,.product-image img { display:block; width:100%; height:100%; }.product-image img { object-fit:cover; }.gallery-thumbs { display:flex; flex-wrap:wrap; gap:9px; margin-top:10px; }.gallery-thumbs button { position:relative; width:76px; height:58px; overflow:hidden; padding:0; border:2px solid transparent; border-radius:9px; background:#fff; cursor:pointer; }.gallery-thumbs button.active { border-color:#d69a2d; }.gallery-thumbs button.measurement { border-color:#8ca668; }.gallery-thumbs button.measurement.active { border-color:#d69a2d; }.gallery-thumbs button.measurement span { position:absolute; right:2px; bottom:2px; padding:2px 4px; border-radius:4px; color:#fff; background:rgba(43,68,33,.9); font-size:8px; font-weight:800; line-height:1; }.gallery-thumbs picture,.gallery-thumbs img { display:block; width:100%; height:100%; }.gallery-thumbs img { object-fit:cover; }.eyebrow { margin:3px 0 11px; color:#b77710; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }.product-details h1 { margin:0 0 15px; color:#172033; font-size:clamp(32px,4vw,49px); letter-spacing:-.05em; line-height:1.07; }.article-number { margin:0 0 18px; color:#66768a; font-size:14px; }.article-number b { color:#26364a; }.lead { margin:0 0 22px; color:#53647a; font-size:16px; line-height:1.64; }.availability { display:flex; flex-direction:column; gap:5px; margin-bottom:15px; padding:14px 16px; border-radius:12px; background:#fff7e2; color:#7e5a19; }.availability b { font-size:13px; }.availability span { font-size:13px; }.buy-button { display:block; padding:15px 18px; border-radius:10px; color:#fff; background:#1d2b3b; font-size:14px; font-weight:800; text-align:center; text-decoration:none; }.note { margin:13px 0 0; color:#78879a; font-size:12px; line-height:1.5; }.details { max-width:760px; margin:38px 0 0; }.details h2 { margin:25px 0 9px; color:#1d2c3f; font-size:24px; letter-spacing:-.035em; }.details p { margin:0; color:#5e6d80; font-size:15px; line-height:1.7; }.models-list { display:flex; flex-wrap:wrap; gap:8px; padding:0; margin:0; list-style:none; }.models-list li { padding:8px 10px; border:1px solid #e4cf9d; border-radius:8px; color:#705219; background:#fff8e8; font-size:13px; font-weight:700; }.compatibility-note { margin-top:12px !important; }.back { margin-top:31px; }.back a { color:#946011; font-size:14px; font-weight:700; text-decoration:none; } footer { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:35px max(20px,calc((100% - 1180px)/2)); color:#d6dce4; background:#111827; } footer strong,footer span { display:block; } footer strong { margin-bottom:5px; color:#fff; font-size:18px; } footer span { font-size:12px; } footer>a { color:#f6ca58; font-size:17px; font-weight:800; text-decoration:none; }
+  @media (max-width:760px) { .header-inner,.container { width:min(100% - 32px,1180px); }.header-inner { min-height:68px; }.header-inner nav { display:none; }.header-phone { margin-left:auto; }.product { grid-template-columns:1fr; gap:25px; padding:15px; }.container { padding:26px 0 56px; }.breadcrumbs { margin-bottom:22px; }.product-details h1 { font-size:34px; }.details { margin-top:30px; } footer { align-items:flex-start; flex-direction:column; } }
+  /* Единый ненавязчивый знак владельца на основном фото и миниатюрах. */
+  .product-image { position:relative; isolation:isolate; }.product-image::after,.gallery-thumbs button::after { position:absolute; z-index:1; inset:0; pointer-events:none; background:url('/img/gazmaster-watermark.webp') 10px 10px / 30% auto no-repeat; content:""; opacity:.12; }.gallery-thumbs button::after { background-position:3px 3px; background-size:65% auto; opacity:.16; }.gallery-thumbs button.measurement span { z-index:2; }
+  .brand>b.brand-logo { width:52px; height:42px; border-radius:0; background:transparent; overflow:hidden; }.brand-logo img { display:block; width:100%; height:100%; object-fit:contain; }
+</style>

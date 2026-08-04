@@ -1,0 +1,141 @@
+---
+import type { GetStaticPaths, ImageMetadata } from "astro";
+import type { SparePart } from "../../../../../app/data/spareParts";
+import { buildProductSeo, buildProductTitle } from "../../../../../app/data/productSeo";
+import { sparePartsBrands } from "../../../../../app/data/spareParts";
+
+const phone = "8 (962) 352-70-02";
+const phoneHref = "tel:+79623527002";
+const imageFilesBySlug = new Map([
+  ["kexinte-turbotec-turbomax-0020020008", "vaillant-fan-01.webp"], ["sohon-turbotec-turbomax-0020020008", "vaillant-fan-02.webp"], ["fime-vgr01855-turbotec-turbomax-0020020008", "vaillant-fan-03.webp"], ["sohon-turbotec-plus-32-0020051400", "vaillant-fan-04.webp"], ["fime-vgr0106426-turbofit-242-5-2-0020253005", "vaillant-fan-05.webp"], ["ventilyator-vaillant-193593", "vaillant-fan-06.webp"], ["ventilyator-vaillant-0020135138", "vaillant-fan-07.webp"], ["ventilyator-turbotec-plus-36-0020200682", "vaillant-fan-08.webp"],
+  ["gvs-12-0020020018", "vaillant-heat-01.webp"], ["gvs-12-turbofit-0020123543", "vaillant-heat-02.webp"], ["gvs-itm-16-0020038571", "vaillant-heat-03.webp"], ["gvs-12-atmo-turbomax-065131", "vaillant-heat-04.webp"], ["gvs-zilmet-12-turbofit-0020123543", "vaillant-heat-05.webp"], ["gvs-19-atmo-turbotec-plus-0020038572", "vaillant-heat-06.webp"], ["gvs-20-atmo-turbomax-065153", "vaillant-heat-07.webp"], ["gvs-swep-16-0020038571", "vaillant-heat-08.webp"], ["gvs-35-turbotec-plus-0020025041", "vaillant-heat-09.webp"], ["osnovnoy-turbofit-0020253011", "vaillant-heat-10-main.webp"], ["heatwave-92-atmotec-turbotec-0020019994", "vaillant-heat-11.webp"], ["heatwave-101-atmo-turbotec-0020039068", "vaillant-heat-12.webp"], ["heatwave-105-turbotec-turbomax-065152", "vaillant-heat-13.webp"], ["89-lamelej-atmomax-064713", "vaillant-heat-14-main.webp"], ["112-lamelej-atmo-turbotec-0020039069", "vaillant-heat-15-clean.webp"], ["95-lamelej-atmomax-064722", "vaillant-heat-16-main.webp"], ["98-lamelej-turbotec-0020039067", "vaillant-heat-17-main.webp"], ["102-lameli-turbomax-064714", "vaillant-heat-18-main.webp"], ["92-lameli-atmo-turbotec-0020019994", "vaillant-heat-19-main.webp"], ["101-lamel-atmo-turbotec-0020039068", "vaillant-heat-20-main.webp"], ["105-lamelej-turbotec-turbomax-065152", "vaillant-heat-21.webp"],
+]);
+const compatibleModelsBySlug = new Map<string, string[]>([
+  ["101-lamel-atmo-turbotec-0020039068", ["atmoTEC pro VUW (VU) INT 280/3-3","turboTEC pro VUW (VU) INT 282/3-3","atmoTEC plus VUW (VU) INT 280/3-5","turboTEC plus VUW (VU) INT 282/3-5"]],
+  ["102-lameli-turbomax-064714", ["turboMAX pro VUW 242/2-3","turboMAX plus VUW 242/2-5"]],
+  ["105-lamelej-turbotec-turbomax-065152", ["turboTEC plus VUW INT 362/3-5","turboTEC plus VUW INT 362/5-5","turboMAX plus VUW 362/2-5"]],
+  ["112-lamelej-atmo-turbotec-0020039069", ["turboTEC plus VU 322/3-5","turboTEC plus VUW 322/3-5","turboTEC plus VU 282/5-5","turboTEC plus VUW 282/5-5","turboTEC plus VUW 322/5-5"]],
+  ["89-lamelej-atmomax-064713", ["atmoMAX pro VUW 240/2-3","atmoMAX plus VUW 240/2-5"]],
+  ["92-lameli-atmo-turbotec-0020019994", ["atmoTEC pro VUW INT 240/3-3","atmoTEC pro VUW INT 240/5-3","turboTEC pro VUW INT 242/3-3","atmoTEC plus VUW INT 240/3-5","turboTEC plus VUW INT 242/3-5","atmoTEC plus VUW INT 240/5-5"]],
+  ["95-lamelej-atmomax-064722", ["atmoMAX pro VUW 280/2-3","atmoMAX plus VUW 280/2-5"]],
+  ["98-lamelej-turbotec-0020039067", ["turboTEC pro VUW INT 242/5-3","turboTEC plus VUW INT 242/5-5"]],
+  ["heatwave-105-turbotec-turbomax-065152", ["turboTEC plus VUW INT 362/3-5","turboTEC plus VUW INT 362/5-5","turboMAX plus VUW 362/2-5"]],
+  ["heatwave-92-atmotec-turbotec-0020019994", ["atmoTEC pro VUW INT 240/3-3","atmoTEC pro VUW INT 240/5-3","turboTEC pro VUW INT 242/3-3","atmoTEC plus VUW INT 240/3-5","turboTEC plus VUW INT 242/3-5","atmoTEC plus VUW INT 240/5-5"]],
+  ["gvs-12-atmo-turbomax-065131", ["atmoMAX pro VUW 240/2-3","turboMAX pro VUW 202/2-3","turboMAX pro VUW 242/2-3","atmoMAX plus VUW 240/2-5","atmoMAX plus VUW 280/2-5","turboMAX plus VUW 242/2-5","turboMAX plus VUW 282/2-5"]],
+  ["gvs-itm-16-0020038571", ["atmoTEC pro VUW INT 240/3-3","atmoTEC pro VUW INT 280/3-3","atmoTEC pro VUW INT 240/5-3","turboTEC pro VUW INT 242/3-3","turboTEC pro VUW INT 282/3-3","turboTEC pro VUW INT 242/5-3"]],
+  ["gvs-19-atmo-turbotec-plus-0020038572", ["atmoTEC plus VUW 240/3-5","atmoTEC plus VUW 280/3-5","atmoTEC plus VUW 240/5-5","atmoTEC plus VUW 280/5-5","turboTEC plus VUW 242/3-5","turboTEC plus VUW 282/3-5","turboTEC plus VUW 242/5-5","turboTEC plus VUW 282/5-5"]],
+  ["gvs-20-atmo-turbomax-065153", ["atmoMAX pro VUW 280/2-3","atmoMAX plus VUW 280/2-5","turboMAX pro VUW 282/2-3","turboMAX plus VUW 282/2-5"]],
+  ["gvs-35-turbotec-plus-0020025041", ["turboTEC plus VUW INT 322/3-5","turboTEC plus VUW INT 322/5-5","turboTEC plus VUW INT 362/3-5","turboTEC plus VUW INT 362/5-5"]],
+  ["gvs-swep-16-0020038571", ["atmoTEC pro VUW INT 240/3-3","atmoTEC pro VUW INT 280/3-3","atmoTEC pro VUW INT 240/5-3","turboTEC pro VUW INT 242/3-3","turboTEC pro VUW INT 282/3-3","turboTEC pro VUW INT 242/5-3"]],
+  ["gvs-12-0020020018", ["atmoTEC pro VUW INT 240/3-3","atmoTEC pro VUW INT 280/3-3","atmoTEC pro VUW INT 240/5-3","turboTEC pro VUW INT 242/3-3","turboTEC pro VUW INT 282/3-3","turboTEC pro VUW INT 242/5-3"]],
+  ["heatwave-101-atmo-turbotec-0020039068", ["atmoTEC pro VUW (VU) INT 280/3-3","turboTEC pro VUW (VU) INT 282/3-3","atmoTEC plus VUW (VU) INT 280/3-5","turboTEC plus VUW (VU) INT 282/3-5"]],
+  ["osnovnoy-turbofit-0020253011", ["turboFIT VUW 242/5-2"]],
+  ["ventilyator-turbotec-plus-36-0020200682", ["Vaillant turboTEC plus VU / VUW INT 362/3-5","Vaillant turboTEC plus VU / VUW INT 362/5-5","Protherm Пантера 35 KTV H-RU"]],
+  ["fime-vgr01855-turbotec-turbomax-0020020008", ["turboTEC pro VU / VUW 242/3-3","turboTEC pro VU / VUW 282/3-3","turboTEC pro VUW 242/5-3","turboTEC plus VUW 242/3-5","turboTEC plus VUW 282/3-5","turboTEC plus VUW 242/5-5","turboTEC plus VUW 282/5-5","turboMAX pro VUW 242/2-3","turboMAX plus VU / VUW 242/2-5","turboMAX plus VU / VUW 282/2-5"]],
+  ["kexinte-turbotec-turbomax-0020020008", ["turboTEC pro VU / VUW 242/3-3","turboTEC pro VU / VUW 282/3-3","turboTEC pro VUW 242/5-3","turboTEC plus VUW 242/3-5","turboTEC plus VUW 282/3-5","turboTEC plus VUW 242/5-5","turboTEC plus VUW 282/5-5","turboMAX pro VUW 242/2-3","turboMAX plus VU / VUW 242/2-5","turboMAX plus VU / VUW 282/2-5"]],
+  ["sohon-turbotec-plus-32-0020051400", ["turboTEC plus VU / VUW INT 322/3-5","turboTEC plus VUW INT 322/5-5"]],
+  ["sohon-turbotec-turbomax-0020020008", ["turboTEC pro VU / VUW 242/3-3","turboTEC pro VU / VUW 282/3-3","turboTEC pro VUW 242/5-3","turboTEC plus VUW 242/3-5","turboTEC plus VUW 282/3-5","turboTEC plus VUW 242/5-5","turboTEC plus VUW 282/5-5","turboMAX pro VUW 242/2-3","turboMAX plus VU / VUW 242/2-5","turboMAX plus VU / VUW 282/2-5"]],
+]);
+const galleryImageFilesBySlug = new Map<string, string[]>([
+  ["gvs-12-0020020018", ["vaillant-heat-gallery-01-2.webp", "vaillant-heat-gallery-01-3.webp"]],
+  ["gvs-12-turbofit-0020123543", ["vaillant-heat-gallery-02-2.webp", "vaillant-heat-gallery-02-3.webp", "vaillant-heat-gallery-02-4.webp"]],
+  ["gvs-itm-16-0020038571", ["vaillant-heat-gallery-03-2.webp", "vaillant-heat-gallery-03-3.webp"]],
+  ["gvs-12-atmo-turbomax-065131", ["vaillant-heat-gallery-04-2.webp", "vaillant-heat-gallery-04-3.webp", "vaillant-heat-gallery-04-4.webp"]],
+  ["gvs-zilmet-12-turbofit-0020123543", ["vaillant-heat-gallery-05-2.webp", "vaillant-heat-gallery-05-3.webp"]],
+  ["gvs-19-atmo-turbotec-plus-0020038572", ["vaillant-heat-gallery-06-2.webp", "vaillant-heat-gallery-06-3.webp"]],
+  ["gvs-20-atmo-turbomax-065153", ["vaillant-heat-gallery-07-2.webp", "vaillant-heat-gallery-07-3.webp"]],
+  ["gvs-swep-16-0020038571", ["vaillant-heat-gallery-08-2.webp", "vaillant-heat-gallery-08-3.webp", "vaillant-heat-gallery-08-4.webp", "vaillant-heat-gallery-08-5.webp", "vaillant-heat-gallery-08-6.webp"]],
+  ["gvs-35-turbotec-plus-0020025041", ["vaillant-heat-gallery-09-2.webp", "vaillant-heat-gallery-09-3.webp", "vaillant-heat-gallery-09-4.webp"]],
+  ["osnovnoy-turbofit-0020253011", ["vaillant-heat-10-clean.webp"]],
+  ["heatwave-92-atmotec-turbotec-0020019994", ["vaillant-heat-measure-11-2.webp"]],
+  ["heatwave-101-atmo-turbotec-0020039068", ["vaillant-heat-measure-12-3.webp"]],
+  ["heatwave-105-turbotec-turbomax-065152", ["vaillant-heat-measure-13-4.webp"]],
+  ["89-lamelej-atmomax-064713", ["vaillant-heat-14-clean.webp"]],
+  ["95-lamelej-atmomax-064722", ["vaillant-heat-16-clean.webp"]],
+  ["98-lamelej-turbotec-0020039067", ["vaillant-heat-17-clean.webp"]],
+  ["102-lameli-turbomax-064714", ["vaillant-heat-18-clean.webp"]],
+  ["92-lameli-atmo-turbotec-0020019994", ["vaillant-heat-19-clean.webp"]],
+  ["101-lamel-atmo-turbotec-0020039068", ["vaillant-heat-20-clean.webp"]],
+  ["105-lamelej-turbotec-turbomax-065152", ["vaillant-heat-measure-21-3.webp"]],
+]);
+const measurementImageFiles = new Set([
+  "vaillant-heat-measure-11-2.webp", "vaillant-heat-measure-12-3.webp", "vaillant-heat-measure-13-4.webp", "vaillant-heat-measure-21-3.webp",
+  "vaillant-heat-10-clean.webp", "vaillant-heat-14-clean.webp", "vaillant-heat-16-clean.webp", "vaillant-heat-17-clean.webp", "vaillant-heat-18-clean.webp", "vaillant-heat-19-clean.webp", "vaillant-heat-20-clean.webp",
+]);
+const isMeasurementImage = (file: string) => measurementImageFiles.has(file);
+const images = import.meta.glob<{ default: ImageMetadata }>("../../../assets/spare-parts/optimized/*.webp", { eager: true });
+const imageByFile = new Map(Object.entries(images).map(([path, image]) => {
+  const file = path.split("/").at(-1)!;
+  return [file, { ...image.default, src: `/img/spare-parts/${file}` }];
+}));
+
+export const getStaticPaths = (() => {
+  const brand = sparePartsBrands.find((item) => item.slug === "vaillant")!;
+  return brand.parts.filter((part) => part.slug).map((part) => ({ params: { slug: part.slug! }, props: { part } }));
+}) satisfies GetStaticPaths;
+
+const { part } = Astro.props as { part: SparePart };
+const telegramRequestUrl = `/zapchasti/request/?start=request-vaillant-${sparePartsBrands.find((item) => item.slug === "vaillant")!.parts.indexOf(part).toString(36)}`;
+const canonical = `https://remontkotlov48.ru/zapchasti/vaillant/${part.slug}/`;
+const imageFile = imageFilesBySlug.get(part.slug ?? "");
+const productImage = imageFile ? imageByFile.get(imageFile) : undefined;
+if (!productImage) throw new Error(`Не найдено изображение товара ${part.slug}`);
+const ogImage = new URL(productImage.src, "https://remontkotlov48.ru").href;
+const galleryImages = [imageFile, ...(galleryImageFilesBySlug.get(part.slug ?? "") ?? [])]
+  .map((file) => ({ file, image: file ? imageByFile.get(file) : undefined }))
+  .filter((item): item is { file: string; image: ImageMetadata } => Boolean(item.image));
+const compatibleModels = compatibleModelsBySlug.get(part.slug ?? "") ?? [];
+const seo = buildProductSeo(part, "Vaillant", compatibleModels);
+const title = buildProductTitle(part);
+const seoModels = compatibleModels.slice(0, 3);
+const compatibilitySeoText = seoModels.length ? ` Подходит для моделей: ${seoModels.join(", ")}.` : "";
+const categorySlug = part.category === "Теплообменники" ? "teploobmenniki" : "ventilyatory";
+const categoryUrl = `/zapchasti/vaillant/${categorySlug}/`;
+const structuredData = { "@context": "https://schema.org", "@graph": [
+  { "@type": "Product", name: part.name, description: seo.lead, sku: part.article, category: part.category, brand: { "@type": "Brand", name: "Vaillant" }, url: canonical, additionalProperty: compatibleModels.map((model) => ({ "@type": "PropertyValue", name: "Совместимая модель котла", value: model })) },
+  { "@type": "BreadcrumbList", itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Главная", item: "https://remontkotlov48.ru/" },
+    { "@type": "ListItem", position: 2, name: "Запчасти", item: "https://remontkotlov48.ru/zapchasti/" },
+    { "@type": "ListItem", position: 3, name: `Vaillant · ${part.category}`, item: `https://remontkotlov48.ru${categoryUrl}` },
+    { "@type": "ListItem", position: 4, name: part.name, item: canonical },
+  ] },
+] };
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={seo.metaDescription} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta property="og:type" content="product" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content={`${part.name} — купить в Липецке | Gazmaster`} />
+    <meta property="og:description" content={`${part.name} для котлов Vaillant. Артикул ${part.article}.${compatibilitySeoText}`} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={part.name} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" href={canonical} hreflang="ru-RU" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header><a class="brand" href="/"><b class="brand-logo"><img src="/img/gazmaster-watermark.webp" alt="" /></b><span><strong>Gazmaster</strong><small>Ремонт котлов · Липецк</small></span></a><nav><a href="/lipeck/uslugi/remont-gazovyh-kotlov/">Ремонт котлов</a><a href="/zapchasti/">Запчасти</a></nav><a class="call" href={phoneHref}>Вызвать мастера</a></header>
+    <main>
+      <nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="/">Главная</a><span>/</span><a href="/zapchasti/">Запчасти</a><span>/</span><a href={categoryUrl}>Vaillant · {part.category}</a><span>/</span><b>{part.name}</b></nav>
+      <article class="product"><div class="product-gallery" data-product-gallery><div class="product-image">{galleryImages.map((item, index) => <div class:list={["gallery-frame", { active: index === 0 }]} data-gallery-frame={index} hidden={index !== 0}><img src={item.image.src} width={item.image.width} height={item.image.height} alt={`${part.name}${isMeasurementImage(item.file) ? " — размеры по линейке" : index ? ` — ракурс ${index + 1}` : ""}`} loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} /></div>)}</div>{(galleryImages.length > 1 || galleryImages.some((item) => isMeasurementImage(item.file))) && <div class="gallery-thumbs" aria-label="Другие ракурсы товара">{galleryImages.map((item, index) => <button class:list={[{ active: index === 0 }, { measurement: isMeasurementImage(item.file) }]} type="button" data-gallery-thumb={index} aria-label={isMeasurementImage(item.file) ? "Показать размеры по линейке" : `Показать ракурс ${index + 1}`} aria-pressed={index === 0}><img src={item.image.src} width={item.image.width} height={item.image.height} alt={`${part.name}${isMeasurementImage(item.file) ? " — размеры по линейке" : index ? ` — ракурс ${index + 1}` : ""}`} loading="lazy" />{isMeasurementImage(item.file) && <span>Размеры</span>}</button>)}</div>}</div><div class="product-details"><p class="eyebrow">{part.category} Vaillant</p><h1>{part.name}</h1><p class="article">Артикул: <b>{part.article}</b></p><p class="lead">{seo.lead}</p><div class="availability"><b>Наличие и цена — по запросу</b><span>Срок поставки — до 7 дней после подтверждения артикула.</span><span>Гарантия — 12 месяцев при правильной эксплуатации котла.</span></div><a class="buy" href={telegramRequestUrl}>Уточнить наличие</a></div></article>
+      <section class="details"><h2>Совместимые модели котлов</h2>{compatibleModels.length > 0 ? <><ul>{compatibleModels.map((model) => <li>{model}</li>)}</ul><p>Список приведён по данным производителя. Перед заказом сверим точную модель, серийный номер и комплектацию котла.</p></> : <p>Совместимость проверяем по артикулу старой детали, модели и серийному номеру котла.</p>}<h2>Особенности подбора</h2><p>{seo.details}</p><h2>Как заказать</h2><p>Позвоните нам или отправьте фото шильдика: подтвердим совместимость, цену и наличие; срок поставки — до 7 дней.</p></section>
+      <p class="back"><a href={categoryUrl}>← Все {part.category.toLowerCase()} Vaillant</a></p>
+    </main>
+    <footer><div><strong>Gazmaster</strong><span>Ремонт, диагностика и подбор запчастей для котлов в Липецке.</span></div><a href={phoneHref}>{phone}</a></footer><script>document.querySelectorAll<HTMLElement>("[data-product-gallery]").forEach((gallery) => { const frames = gallery.querySelectorAll<HTMLElement>("[data-gallery-frame]"); const thumbs = gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumb]"); thumbs.forEach((thumb) => thumb.addEventListener("click", () => { const selected = thumb.dataset.galleryThumb; frames.forEach((frame) => { frame.hidden = frame.dataset.galleryFrame !== selected; frame.classList.toggle("active", frame.dataset.galleryFrame === selected); }); thumbs.forEach((item) => { const active = item === thumb; item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active)); }); })); });</script>
+  </body>
+</html>
+
+<style>
+  :root{color:#172033;font-family:Arial,sans-serif;background:#f5f7fb}*{box-sizing:border-box}body{margin:0}header,main{width:min(1180px,calc(100% - 40px));margin:auto}header{display:flex;align-items:center;gap:25px;min-height:76px}.brand{display:flex;align-items:center;gap:10px;color:#172033;text-decoration:none}.brand>b{display:grid;place-items:center;width:37px;height:37px;border-radius:12px;background:#f2c94c;font-size:20px}.brand strong,.brand small{display:block}.brand strong{font-size:16px}.brand small{margin-top:3px;color:#7c8796;font-size:10px}header nav{display:flex;gap:19px;margin-left:auto}header nav a{color:#5b687a;font-size:13px;font-weight:700;text-decoration:none}.call,.buy{padding:12px 15px;border-radius:9px;color:#fff;background:#1c2737;font-size:13px;font-weight:800;text-decoration:none}.breadcrumbs{display:flex;flex-wrap:wrap;gap:8px;margin:32px 0 30px;color:#8390a4;font-size:13px}.breadcrumbs a{color:#526780;text-decoration:none}.product{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.88fr);gap:54px;padding:26px;border:1px solid #e2e7ee;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(30,41,59,.05)}.product-image{overflow:hidden;border-radius:14px;background:#fff;aspect-ratio:4/3}.gallery-frame{width:100%;height:100%}.product-image picture,.product-image img{display:block;width:100%;height:100%}.product-image img{object-fit:cover}.gallery-thumbs{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}.gallery-thumbs button{position:relative;width:76px;height:58px;overflow:hidden;padding:0;border:2px solid transparent;border-radius:9px;background:#fff;cursor:pointer}.gallery-thumbs button.active{border-color:#d69a2d}.gallery-thumbs button.measurement{border-color:#8ca668}.gallery-thumbs button.measurement.active{border-color:#d69a2d}.gallery-thumbs button.measurement span{position:absolute;right:2px;bottom:2px;padding:2px 4px;border-radius:4px;color:#fff;background:rgba(43,68,33,.9);font-size:8px;font-weight:800;line-height:1}.gallery-thumbs picture,.gallery-thumbs img{display:block;width:100%;height:100%}.gallery-thumbs img{object-fit:cover}.eyebrow{margin:3px 0 11px;color:#b77710;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.product-details h1{margin:0 0 15px;font-size:clamp(32px,4vw,49px);letter-spacing:-.05em;line-height:1.07}.article{color:#66768a}.lead,.details p{color:#5e6d80;font-size:15px;line-height:1.7}.availability{display:flex;flex-direction:column;gap:5px;margin:20px 0 15px;padding:14px 16px;border-radius:12px;background:#fff7e2;color:#7e5a19}.availability b,.availability span{font-size:13px}.buy{display:block;text-align:center}.details{max-width:760px;margin:38px 0}.details h2{margin:25px 0 10px;font-size:24px}.details ul{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}.details li{padding:8px 10px;border:1px solid #e4cf9d;border-radius:8px;color:#705219;background:#fff8e8;font-size:13px;font-weight:700}.back{margin:31px 0}.back a{color:#946011;font-weight:700;text-decoration:none}footer{display:flex;justify-content:space-between;gap:24px;padding:35px max(20px,calc((100% - 1180px)/2));color:#d6dce4;background:#111827}footer strong,footer span{display:block}footer strong{margin-bottom:5px;color:#fff;font-size:18px}footer span{font-size:12px}footer>a{color:#f6ca58;font-size:17px;font-weight:800;text-decoration:none}@media(max-width:760px){header,main{width:min(100% - 32px,1180px)}header{min-height:68px}header nav{display:none}.call{margin-left:auto}.product{grid-template-columns:1fr;gap:25px;padding:15px}.breadcrumbs{margin:25px 0 22px}.product-details h1{font-size:34px}footer{align-items:flex-start;flex-direction:column}}
+  /* Единый ненавязчивый знак владельца на основном фото и миниатюрах. */
+  .product-image { position:relative; isolation:isolate; }.product-image::after,.gallery-thumbs button::after { position:absolute; z-index:1; inset:0; pointer-events:none; background:url('/img/gazmaster-watermark.webp') 10px 10px / 30% auto no-repeat; content:""; opacity:.12; }.gallery-thumbs button::after { background-position:3px 3px; background-size:65% auto; opacity:.16; }.gallery-thumbs button.measurement span { z-index:2; }
+  .brand>b.brand-logo { width:52px; height:42px; border-radius:0; background:transparent; overflow:hidden; }.brand-logo img { display:block; width:100%; height:100%; object-fit:contain; }
+</style>

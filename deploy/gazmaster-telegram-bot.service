@@ -1,0 +1,14 @@
+[Unit]
+Description=Gazmaster Telegram catalog bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/project/site-src
+ExecStart=/usr/bin/node /root/project/site-src/scripts/telegram-catalog-bot.mjs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

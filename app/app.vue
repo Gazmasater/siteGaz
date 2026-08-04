@@ -1,5 +1,19 @@
 <script setup>
 useHead({
+  meta: [
+    { property: 'og:image', content: 'https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp' },
+    { property: 'og:image:secure_url', content: 'https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp' },
+    { property: 'og:image:type', content: 'image/webp' },
+    { property: 'og:image:width', content: '1600' },
+    { property: 'og:image:height', content: '604' },
+    { property: 'og:image:alt', content: 'Gazmaster — ремонт газовых котлов в Липецке' },
+    { name: 'twitter:image', content: 'https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp' },
+    { name: 'twitter:image:alt', content: 'Gazmaster — ремонт газовых котлов в Липецке' },
+  ],
+  link: [
+    { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+    { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
+  ],
   script: [
     {
       innerHTML: `(function(m,e,t,r,i,k,a){

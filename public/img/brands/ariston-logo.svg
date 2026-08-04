@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 110" role="img" aria-labelledby="title">
+  <title id="title">Ariston</title>
+  <rect width="420" height="110" rx="0" fill="#d3112a"/>
+  <g fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M35 68V45l30-27 30 27v42H35V68z"/>
+    <path d="M55 87V58h20v29"/>
+  </g>
+  <text
+    x="125"
+    y="72"
+    fill="#fff"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="46"
+    font-weight="700"
+    letter-spacing="3"
+  >ARISTON</text>
+</svg>

@@ -21,6 +21,7 @@ const telHref = computed(() => `tel:${props.phone.replace(/[^\d+]/g, "")}`);
 
       <div class="flex flex-col gap-3 sm:flex-row">
         <a class="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-400" :href="telHref">Позвонить {{ phone }}</a>
+        <MessengerButtons tone="dark" />
         <button class="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/15" type="button" @click="alert('Дальше подключим /api/leads')">
           {{ secondary || "Оставить заявку" }}
         </button>

@@ -7,8 +7,8 @@ const region = String(route.params.region || "");
 const regionName = regionTitle(region);
 const regionPrep = regionPrepTitle(region);
 const regionRoute = regionRouteTitle(region);
-const phone = "+7 (933) 091-72-76";
-const phoneHref = "tel:+79330917276";
+const phone = "8 (962) 352-70-02";
+const phoneHref = "tel:+79623527002";
 const yandexMapsUrl = "https://yandex.ru/maps/org/gazmaster/165084897107/?ll=39.535637%2C52.603696&z=16";
 const yandexServicesUrl =
   "https://uslugi.yandex.ru/profile/Gazmaster-108825?occupationId=%2Fremont-i-ustanovka-tehniki&specId=%2Fremont-i-ustanovka-tehniki%2Fdrugoe&text=%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%B3%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85+%D0%BA%D0%BE%D1%82%D0%BB%D0%BE%D0%B2";
@@ -34,9 +34,9 @@ const stats = [
 ];
 
 const title = `Ремонт газовых котлов в ${regionPrep}`;
-const description = `Ремонт и диагностика газовых котлов Protherm, Baxi, Navien, Vaillant, Viessmann в ${regionPrep}. Разбор кодов ошибок, выезд мастера и согласование стоимости до ремонта.`;
+const description = `Ремонт и диагностика газовых котлов Ariston, Baxi, Ferroli, Fondital, Navien, Protherm, Vaillant и Viessmann в ${regionPrep}. Разбор кодов ошибок, выезд мастера и согласование стоимости до ремонта.`;
 const canonicalUrl = `https://remontkotlov48.ru/${region}/remont/`;
-const keywords = `ремонт газовых котлов ${regionName}, ремонт котлов ${regionName}, ошибки котлов Protherm, ошибки котлов Baxi, ошибки котлов Navien, ошибки котлов Vaillant, ошибки котлов Viessmann, мастер по котлам ${regionName}`;
+const keywords = `ремонт газовых котлов ${regionName}, ремонт котлов ${regionName}, ремонт котлов Ariston, Baxi, Ferroli, Fondital, Navien, Protherm, Vaillant, Viessmann, мастер по котлам ${regionName}`;
 
 useHead({
   title: `${title} — ошибки, бренды и услуги`,
@@ -46,6 +46,7 @@ useHead({
     { property: "og:title", content: `${title} — ошибки, бренды и услуги` },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
+    { property: "og:url", content: canonicalUrl },
   ],
   link: [{ rel: "canonical", href: canonicalUrl }],
   script: [
@@ -64,14 +65,6 @@ useHead({
           telephone: phone,
           hasMap: yandexMapsUrl,
           sameAs: [yandexMapsUrl, yandexServicesUrl],
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.9",
-            reviewCount: "49",
-            ratingCount: "55",
-            bestRating: "5",
-            worstRating: "1",
-          },
           address: { "@type": "PostalAddress", addressLocality: regionName, addressCountry: "RU" },
         },
         offers: {
@@ -109,12 +102,18 @@ useHead({
 
 <template>
   <main class="bg-white text-neutral-950">
+    <nav class="mx-auto max-w-7xl px-4 py-4 text-sm text-neutral-500 sm:px-6 lg:px-8" aria-label="Хлебные крошки">
+      <NuxtLink to="/" class="hover:text-neutral-900">Главная</NuxtLink>
+      <span class="mx-2 text-neutral-300" aria-hidden="true">/</span>
+      <span>{{ title }}</span>
+    </nav>
+
     <section class="relative isolate overflow-hidden bg-neutral-950 text-white">
       <picture>
         <source srcset="/img/header-boiler-generated-79330917276.avif" type="image/avif" />
         <source srcset="/img/header-boiler-generated-79330917276.webp" type="image/webp" />
         <img
-          src="/img/header-boiler-generated-79330917276.png"
+          src="/img/header-boiler-generated-79330917276.webp"
           alt="Ремонт газовых котлов в Липецке"
           class="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center]"
           loading="eager"
@@ -131,13 +130,14 @@ useHead({
           </div>
           <h1 class="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">{{ title }}</h1>
           <p class="mt-5 max-w-2xl text-lg leading-8 text-white/86">
-            Диагностика неисправностей, ремонт по кодам ошибок и обслуживание настенных котлов Protherm, Baxi, Navien, Vaillant и Viessmann.
+            Диагностика неисправностей, ремонт по кодам ошибок и обслуживание настенных котлов всех восьми представленных марок.
           </p>
 
           <div class="mt-8 flex flex-wrap gap-3">
             <a :href="phoneHref" class="rounded-lg bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-950/30 hover:bg-emerald-400">
               Позвонить мастеру
             </a>
+            <MessengerButtons tone="dark" />
             <a href="#brands" class="rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/15">
               Выбрать марку котла
             </a>
@@ -176,7 +176,8 @@ useHead({
       <div class="mt-6 grid gap-4 lg:grid-cols-3">
         <article v-for="brand in brandCards" :key="brand.slug" class="flex h-full flex-col rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
           <div class="flex min-h-14 items-center justify-between gap-4">
-            <img :src="brand.logo" :alt="`Логотип ${brand.name}`" class="max-h-12 max-w-36 object-contain" />
+            <img v-if="brand.logo" :src="brand.logo" :alt="`Логотип ${brand.name}`" class="max-h-12 max-w-36 object-contain" />
+            <span v-else class="inline-flex min-h-12 items-center rounded-lg bg-neutral-950 px-4 text-base font-black text-white">{{ brand.name }}</span>
             <span class="rounded-full bg-neutral-100 px-3 py-1 text-xs font-bold text-neutral-600">{{ brand.codes.length }} кодов</span>
           </div>
           <h3 class="mt-5 text-xl font-black">

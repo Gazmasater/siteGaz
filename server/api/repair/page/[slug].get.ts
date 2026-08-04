@@ -72,6 +72,7 @@ function normCodeForBrand(codeRaw: string, brandSlug: string): string {
   const c = codeRaw.trim().toUpperCase();
   if (!c) return brandSlug === "navien" ? "??" : "F??";
   if (brandSlug === "navien") return c.startsWith("E") ? c.replace(/^E0*/, "").padStart(c.replace(/^E0*/, "").length <= 2 ? 2 : 3, "0") : c;
+  if (brandSlug === "fondital") return c;
   if (brandSlug === "viessmann") return c === "03-SERV" ? "03 + SERV" : c;
   return normCode(c);
 }
@@ -89,6 +90,7 @@ function brandName(brandSlug: string): string {
   const map: Record<string, string> = {
     protherm: "Protherm",
     baxi: "Baxi",
+    fondital: "Fondital",
     vaillant: "Vaillant",
     viessmann: "Viessmann",
   };
@@ -97,9 +99,9 @@ function brandName(brandSlug: string): string {
 
 function phoneForRegion(regionSlug: string): string {
   const map: Record<string, string> = {
-    lipeck: "+7 (933) 091-72-76",
+    lipeck: "8 (962) 352-70-02",
   };
-  return map[regionSlug] || "+7 (933) 091-72-76";
+  return map[regionSlug] || "8 (962) 352-70-02";
 }
 
 function regionIn(regionSlug: string, region: string): string {
@@ -115,8 +117,9 @@ function canonicalUrl(regionSlug: string, brandSlug: string, codeRaw: string): s
 
 function makeBreadcrumbs(regionSlug: string, brand: string, brandSlug: string, code: string, codeRaw: string) {
   return [
+    { title: "Главная", url: "/" },
     { title: "Ремонт котлов", url: `/${regionSlug}/remont/` },
-    { title: brand, url: "" },
+    { title: brand, url: `/${regionSlug}/remont/${brandSlug}/` },
     { title: `Ошибка ${code}`, url: `/${regionSlug}/remont/${brandSlug}/oshybka-${codeRaw.toLowerCase()}/` },
   ];
 }
@@ -131,14 +134,6 @@ function makeLocalBusiness(region: string, brand: string, phone: string): Record
     telephone: phone,
     hasMap: yandexMapsUrl,
     sameAs: [yandexMapsUrl, yandexServicesUrl],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "49",
-      ratingCount: "55",
-      bestRating: "5",
-      worstRating: "1",
-    },
     address: {
       "@type": "PostalAddress",
       addressLocality: region,
@@ -1789,8 +1784,40 @@ function viessmannErrorInfo(code: string, regionPrep: string): ErrorInfo {
   };
 }
 
+function fonditalErrorInfo(code: string, regionPrep: string): ErrorInfo {
+  const errors: Record<string, { label: string; faults: string[] }> = {
+    "33": {
+      label: "обрыв цепи датчика ГВС",
+      faults: [
+        "Обрыв или неисправность датчика температуры ГВС",
+        "Нарушение контакта в разъёме или повреждение проводки датчика",
+        "Окисление контактов либо неисправность платы управления",
+      ],
+    },
+  };
+  const info = errors[code.toUpperCase()] || errors["33"]!;
+  return {
+    label: info.label,
+    intro: `Ошибка ${code} на котлах Fondital в документации серии ITACA CH обозначает обрыв цепи датчика ГВС. У других серий код нужно сверять с инструкцией конкретной модели. В ${regionPrep} мастер проверяет датчик, разъём, проводку и работу контура горячей воды.`,
+    causes: info.faults.map((title, index) => ({ title, probability: Math.max(0.1, 0.35 - index * 0.05) })),
+    steps: [
+      { title: "Запишите код и точную модель котла Fondital", safety: "low", can_user_do: true },
+      { title: "Проверьте, появляется ли ошибка при открытии крана горячей воды", safety: "low", can_user_do: true },
+      { title: "Не вскрывайте котёл: проверку датчика и проводки выполняет мастер", safety: "high", can_user_do: false },
+    ],
+    faq: [
+      { q: "Ошибка 33 Fondital означает замену теплообменника?", a: "Нет. Код прежде всего относится к датчику ГВС и его цепи; теплообменник проверяют отдельно по результатам диагностики." },
+      { q: "Можно ли просто сбросить ошибку 33?", a: "Один сброс по инструкции допустим. При повторе кода требуется проверка датчика и проводки." },
+    ],
+  };
+}
+
 function vaillantErrorInfo(code: string, regionPrep: string): ErrorInfo {
   const errors: Record<string, { label: string; faults: string[] }> = {
+    F12: {
+      label: "короткое замыкание датчика температуры подключения ГВС",
+      faults: ["Неисправен датчик температуры ГВС", "Короткое замыкание или неисправность электрического подключения датчика"],
+    },
     F20: {
       label: "срабатывание датчика STB",
       faults: ["Датчик NTC неисправен или неправильно подключён", "Котёл не отключается"],
@@ -1902,8 +1929,8 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
         brand,
         brandSlug: brandSlugNorm,
         code,
-        heroImg: "/img/header-boiler-generated-79330917276.png",
-        logo: "/img/brands/protherm-logo.png",
+        heroImg: "/img/header-boiler-generated-79330917276.webp",
+        logo: "/img/brands/protherm-logo.webp",
         logoAlt: "Логотип Protherm",
         intro:
           "Ошибка F28 на котлах Protherm чаще всего связана с розжигом или подачей газа. Ниже — частые причины и безопасные действия, которые можно сделать без вмешательства в газовую часть.",
@@ -1974,8 +2001,8 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
         brand,
         brandSlug: brandSlugNorm,
         code,
-        heroImg: "/img/header-boiler-generated-79330917276.png",
-        logo: "/img/brands/protherm-logo.png",
+        heroImg: "/img/header-boiler-generated-79330917276.webp",
+        logo: "/img/brands/protherm-logo.webp",
         logoAlt: "Логотип Protherm",
         intro:
           "Ошибка F29 обычно означает потерю пламени после розжига. Часто причина — нестабильная подача газа, ионизация или влияние дымоудаления (в зависимости от модели).",
@@ -2016,8 +2043,8 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
         brand,
         brandSlug: brandSlugNorm,
         code,
-        heroImg: "/img/header-boiler-generated-79330917276.png",
-        logo: "/img/brands/protherm-logo.png",
+        heroImg: "/img/header-boiler-generated-79330917276.webp",
+        logo: "/img/brands/protherm-logo.webp",
         logoAlt: "Логотип Protherm",
         intro:
           "Ошибка F75 связана с давлением/циркуляцией: котёл не видит ожидаемого изменения давления при запуске насоса. Частые причины — воздух в системе, датчик давления, насос, фильтр.",
@@ -2054,6 +2081,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
   const isProtherm = brandSlugNorm === "protherm";
   const isBaxi = brandSlugNorm === "baxi";
   const isNavien = brandSlugNorm === "navien";
+  const isFondital = brandSlugNorm === "fondital";
   const isVaillant = brandSlugNorm === "vaillant";
   const isViessmann = brandSlugNorm === "viessmann";
   const errorInfo = isProtherm
@@ -2062,23 +2090,27 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
       ? baxiErrorInfo(code, regionPrep)
       : isNavien
         ? navienErrorInfo(code, regionPrep)
+        : isFondital
+          ? fonditalErrorInfo(code, regionPrep)
         : isVaillant
           ? vaillantErrorInfo(code, regionPrep)
           : isViessmann
           ? viessmannErrorInfo(code, regionPrep)
           : undefined;
   const logo = isProtherm
-    ? "/img/brands/protherm-logo.png"
+    ? "/img/brands/protherm-logo.webp"
     : isBaxi
       ? "/img/brands/baxi-logo.jpg"
       : isNavien
-        ? "/img/brands/navien-logo.png"
+        ? "/img/brands/navien-logo.webp"
+        : isFondital
+          ? "/img/brands/fondital-logo-menu.webp"
         : isVaillant
-          ? "/img/brands/vaillant-logo.png"
+          ? "/img/brands/vaillant-logo.webp"
           : isViessmann
           ? "/img/brands/viessmann-logo.svg"
           : undefined;
-  const logoAlt = isProtherm ? "Логотип Protherm" : isBaxi ? "Логотип Baxi" : isNavien ? "Логотип Navien" : isVaillant ? "Логотип Vaillant" : isViessmann ? "Логотип Viessmann" : undefined;
+  const logoAlt = isProtherm ? "Логотип Protherm" : isBaxi ? "Логотип Baxi" : isNavien ? "Логотип Navien" : isFondital ? "Логотип Fondital" : isVaillant ? "Логотип Vaillant" : isViessmann ? "Логотип Viessmann" : undefined;
   const blocks = makeCommonBlocks({
     region,
     regionPrep,
@@ -2086,7 +2118,7 @@ function buildPage(slug: string, regionSlug: string, brandSlug: string, codeRaw:
     brand,
     brandSlug: brandSlugNorm,
     code,
-    heroImg: isProtherm || isBaxi || isNavien || isVaillant || isViessmann ? "/img/header-boiler-generated-79330917276.png" : `/img/repair/${brandSlugNorm}/hero.jpg`,
+    heroImg: isProtherm || isBaxi || isNavien || isFondital || isVaillant || isViessmann ? "/img/header-boiler-generated-79330917276.webp" : `/img/repair/${brandSlugNorm}/hero.jpg`,
     logo,
     logoAlt,
     intro: errorInfo?.intro || `Страница по ошибке ${code} для котлов ${brand}. Причины, проверки, цены и сроки ремонта в ${regionPrep}.`,

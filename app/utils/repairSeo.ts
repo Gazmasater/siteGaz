@@ -1,8 +1,11 @@
 export const repairBrands = [
-  { slug: "protherm", name: "Protherm", alias: "Протерм", logo: "/img/brands/protherm-logo.png" },
+  { slug: "ariston", name: "Ariston", alias: "Аристон", logo: "/img/brands/ariston-logo.svg" },
   { slug: "baxi", name: "Baxi", logo: "/img/brands/baxi-logo.jpg" },
-  { slug: "navien", name: "Navien", logo: "/img/brands/navien-logo.png" },
-  { slug: "vaillant", name: "Vaillant", alias: "Вайлант", logo: "/img/brands/vaillant-logo.png" },
+  { slug: "ferroli", name: "Ferroli", logo: "/img/brands/ferroli-logo.webp" },
+  { slug: "fondital", name: "Fondital", logo: "/img/brands/fondital-logo-menu.webp" },
+  { slug: "navien", name: "Navien", logo: "/img/brands/navien-logo.webp" },
+  { slug: "protherm", name: "Protherm", alias: "Протерм", logo: "/img/brands/protherm-logo.webp" },
+  { slug: "vaillant", name: "Vaillant", alias: "Вайлант", logo: "/img/brands/vaillant-logo.webp" },
   { slug: "viessmann", name: "Viessmann", logo: "/img/brands/viessmann-logo.svg" },
 ];
 
@@ -16,6 +19,18 @@ export const repairServicePages = [
     slug: "obsluzhivanie-kotlov",
     title: "Обслуживание газовых котлов",
     lead: "Профилактика котла перед сезоном: чистка, проверка датчиков, тяги, давления, насоса и основных узлов.",
+  },
+  {
+    slug: "montazh-gazovyh-kotlov",
+    title: "Монтаж газовых котлов",
+    lead:
+      "Монтаж и установка газовых котлов в Липецке: подбор места, аккуратное подключение к системе отопления, настройка и проверка запуска.",
+  },
+  {
+    slug: "montazh-sistem-otopleniya",
+    title: "Монтаж систем отопления",
+    lead:
+      "Монтаж систем отопления в Липецке: разводка труб, установка радиаторов, теплый пол, подключение котла, заполнение системы и проверка циркуляции.",
   },
   {
     slug: "chistka-teploobmennika",
@@ -108,8 +123,22 @@ export const brandErrorCodes: Record<string, string[]> = {
     "93",
     "218",
   ],
-  vaillant: ["F20", "F22", "F23", "F24", "F27", "F28", "F29", "F60", "F61", "F70", "F71", "F73", "F75", "F77", "F82", "FXX"],
+  ariston: [],
+  ferroli: [],
+  fondital: ["33"],
+  vaillant: ["F12", "F20", "F22", "F23", "F24", "F27", "F28", "F29", "F60", "F61", "F70", "F71", "F73", "F75", "F77", "F82", "FXX"],
   viessmann: ["F2", "F3", "F4", "F5", "F6", "F8", "B0", "B8", "30", "38", "51", "59", "50", "58", "0C", "0E", "0A", "03-SERV", "SERV"],
+};
+
+// Ссылки на запчасти показываются только там, где код связан с проверкой
+// дымоудаления или теплообмена. Код ошибки сам по себе не является диагнозом.
+export const errorRelatedPartTypes: Record<string, Record<string, Array<"fan" | "primaryHeat" | "dhwHeat">>> = {
+  protherm: { f23: ["primaryHeat"], f24: ["primaryHeat"] },
+  baxi: { e03: ["fan"], e06: ["dhwHeat"], e25: ["primaryHeat"], e26: ["primaryHeat"] },
+  navien: { "01": ["primaryHeat"], "07": ["dhwHeat"], "08": ["dhwHeat"], "10": ["fan"], "13": ["dhwHeat"], "16": ["primaryHeat"], "27": ["fan"] },
+  fondital: { "33": ["dhwHeat"] },
+  vaillant: { f12: ["dhwHeat"], f20: ["primaryHeat"], f23: ["primaryHeat"], f24: ["primaryHeat"] },
+  viessmann: { "51": ["dhwHeat"], "59": ["dhwHeat"] },
 };
 
 export function displayErrorCode(code: string) {

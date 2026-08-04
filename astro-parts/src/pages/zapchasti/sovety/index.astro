@@ -1,0 +1,18 @@
+---
+import { catalogGuides } from "../../../../../app/data/catalogGuides";
+const canonical = "https://remontkotlov48.ru/zapchasti/sovety/";
+const title = "Советы по подбору запчастей для котлов | Gazmaster";
+const description = "Практические советы по подбору теплообменников, вентиляторов и запчастей для газовых котлов.";
+const ogImage = "https://remontkotlov48.ru/img/header-boiler-generated-79330917276.webp";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Главная", item: "https://remontkotlov48.ru/" },
+    { "@type": "ListItem", position: 2, name: "Запчасти", item: "https://remontkotlov48.ru/zapchasti/" },
+    { "@type": "ListItem", position: 3, name: "Советы по подбору", item: canonical },
+  ],
+};
+---
+<!doctype html><html lang="ru"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="description" content={description} /><meta property="og:type" content="website" /><meta property="og:locale" content="ru_RU" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} /><meta property="og:image" content={ogImage} /><meta property="og:image:width" content="1600" /><meta property="og:image:height" content="604" /><meta property="og:image:alt" content="Советы по подбору запчастей для котлов Gazmaster" /><link rel="canonical" href={canonical} /><script type="application/ld+json" set:html={JSON.stringify(structuredData)} /><title>{title}</title></head><body><main><nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="/">Главная</a><span aria-hidden="true">/</span><a href="/zapchasti/">Запчасти</a><span aria-hidden="true">/</span><b>Советы по подбору</b></nav><h1>Советы по подбору запчастей для котлов</h1><p>Памятки по подбору деталей, проверке артикула и совместимости.</p><div>{catalogGuides.map((guide) => <article><h2><a href={`/zapchasti/sovety/${guide.slug}/`}>{guide.title}</a></h2><p>{guide.description}</p><a href={`/zapchasti/sovety/${guide.slug}/`}>Открыть статью →</a></article>)}</div></main></body></html>
+<style>:root{font-family:Arial,sans-serif;color:#172033;background:#f5f7fb}main{width:min(100% - 40px,980px);margin:0 auto;padding:40px 0}a{color:#385d85;font-weight:700;text-decoration:none}h1{font-size:clamp(32px,5vw,50px)}main>p{color:#52627a;font-size:17px;line-height:1.6}.breadcrumbs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px;color:#8390a4;font-size:13px}.breadcrumbs b{color:#38465c}div{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:30px}article{padding:20px;border:1px solid #e0e6ed;border-radius:15px;background:#fff}h2{margin:0 0 10px;font-size:21px;line-height:1.25}article p{min-height:72px;color:#5d6b7e;line-height:1.55}@media(max-width:600px){main{width:min(100% - 32px,980px);padding:24px 0}}</style>

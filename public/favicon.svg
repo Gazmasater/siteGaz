@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Три пламени фитиля</title>
+  <rect width="64" height="64" rx="12" fill="#182126"/>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 53V39" stroke="#f2d6a2" stroke-width="4"/>
+    <path d="M32 55V36" stroke="#f2d6a2" stroke-width="4"/>
+    <path d="M44 53V39" stroke="#f2d6a2" stroke-width="4"/>
+    <path d="M20 10C11 21 13 35 20 42C27 35 29 22 20 10Z" fill="#ff8a1f"/>
+    <path d="M32 6C21 20 23 37 32 46C41 37 43 20 32 6Z" fill="#ff8a1f"/>
+    <path d="M44 10C35 21 37 35 44 42C51 35 53 22 44 10Z" fill="#ff8a1f"/>
+    <path d="M20 22C16 29 17 35 20 39C23 35 24 29 20 22Z" fill="#ffd166"/>
+    <path d="M32 20C27 28 28 37 32 42C36 37 37 28 32 20Z" fill="#ffd166"/>
+    <path d="M44 22C40 29 41 35 44 39C47 35 48 29 44 22Z" fill="#ffd166"/>
+  </g>
+</svg>
